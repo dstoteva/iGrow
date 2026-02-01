@@ -1,4 +1,4 @@
-namespace iGrow.Models
+namespace iGrow.ViewModels
 {
     public class ErrorViewModel
     {

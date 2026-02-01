@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using iGrow.Models;
+using iGrow.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace iGrow.Controllers
