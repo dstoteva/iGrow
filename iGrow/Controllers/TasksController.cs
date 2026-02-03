@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace iGrow.Controllers
+﻿namespace iGrow.Controllers
 {
+    using Microsoft.AspNetCore.Mvc;
     public class TasksController : Controller
     {
         public IActionResult Index()

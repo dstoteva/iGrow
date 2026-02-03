@@ -1,9 +1,8 @@
-using System.Diagnostics;
-using iGrow.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-
 namespace iGrow.Controllers
 {
+    using System.Diagnostics;
+    using iGrow.ViewModels;
+    using Microsoft.AspNetCore.Mvc;
     public class HomeController : Controller
     {
         public IActionResult Index()
