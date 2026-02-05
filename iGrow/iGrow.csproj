@@ -8,11 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\iGrow.GCommon\iGrow.GCommon.csproj" />
+    <ProjectReference Include="..\iGrow.Services\iGrow.Services.csproj" />
+    <ProjectReference Include="..\ViewModels\iGrow.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

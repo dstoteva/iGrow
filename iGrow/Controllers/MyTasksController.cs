@@ -1,8 +1,14 @@
 ﻿namespace iGrow.Controllers
 {
+    using iGrow.Services.Contracts;
     using Microsoft.AspNetCore.Mvc;
-    public class TasksController : Controller
+    public class MyTasksController : Controller
     {
+        private readonly IMyTaskService _taskService;
+        public MyTasksController(IMyTaskService taskService)
+        {
+            this._taskService = taskService;
+        }
         public IActionResult Index()
         {
             return Json("All tasks");

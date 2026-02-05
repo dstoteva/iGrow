@@ -1,3 +1,14 @@
 <Solution>
-  <Project Path="iGrow/iGrow.csproj" />
+  <Folder Name="/Data/">
+    <Project Path="iGrow.Data.Models/iGrow.Data.Models.csproj" Id="517e66e0-2774-4a9b-a7b3-6099313478a4" />
+    <Project Path="iGrow.Data/iGrow.Data.csproj" Id="055cd523-ab3b-4c45-86a7-e2a71774cd1b" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="iGrow.Services/iGrow.Services.csproj" Id="21d79b56-3a58-49ad-849f-6f1cbca66ac4" />
+  </Folder>
+  <Folder Name="/Web/">
+    <Project Path="iGrow/iGrow.csproj" />
+    <Project Path="ViewModels/iGrow.ViewModels.csproj" Id="86ec2eb0-a9bf-4240-a851-5845bb52d65f" />
+  </Folder>
+  <Project Path="iGrow.GCommon/iGrow.GCommon.csproj" Id="d377f09d-a7a9-4dae-8ab7-41c04fcf1dae" />
 </Solution>

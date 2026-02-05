@@ -1,6 +1,8 @@
 namespace iGrow
 {
     using iGrow.Data;
+    using iGrow.Services.Contracts;
+    using iGrow.Services;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     public class Program
@@ -18,6 +20,8 @@ namespace iGrow
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<IMyTaskService, MyTaskService>();
 
             WebApplication app = builder.Build();
 
