@@ -1,0 +1,43 @@
+﻿@using iGrow.Web.ViewModels.MyTask
+@model IEnumerable<MyTaskAllViewModel>
+
+<h2>All Tasks</h2>
+
+@if (Model == null || !Model.Any())
+{
+    <p>No tasks available.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Completed</th>
+                <th>Recurring</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Date</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.Priority</td>
+                    <td>@(item.IsCompleted ? "Yes" : "No")</td>
+                    <td>@item.RecurringTypeName</td>
+                    <td>
+                        <a asp-controller="MyTasks" asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-controller="MyTasks" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-controller="MyTasks" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

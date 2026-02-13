@@ -9,7 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\iGrow.Data\iGrow.Data.csproj" />
     <ProjectReference Include="..\iGrow.GCommon\iGrow.GCommon.csproj" />
-    <ProjectReference Include="..\ViewModels\iGrow.ViewModels.csproj" />
+    <ProjectReference Include="..\ViewModels\iGrow.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

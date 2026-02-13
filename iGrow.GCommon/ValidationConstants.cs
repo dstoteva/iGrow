@@ -14,6 +14,7 @@
         // Category
         public const int CategoryNameMinLength = 3;
         public const int CategoryNameMaxLength = 20;
+        public const int CategoryImageUrlMaxLength = 2048;
 
         //Habit
         public const int HabitTitleMinLength = 3;

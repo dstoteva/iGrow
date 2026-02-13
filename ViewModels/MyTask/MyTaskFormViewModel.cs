@@ -1,33 +1,27 @@
-﻿namespace iGrow.Data.Models
+﻿namespace iGrow.Web.ViewModels.MyTask
 {
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
-    using Microsoft.AspNetCore.Identity;
+    using iGrow.GCommon;
 
     using static iGrow.GCommon.ValidationConstants;
-
-    [Table("Tasks")]
-    public class MyTask
+    public class MyTaskFormViewModel
     {
-        [Key]
-        public Guid Id { get; set; }
         [Required]
         [StringLength(TaskTitleMaxLength, MinimumLength = TaskTitleMinLength)]
         public string Title { get; set; } = null!;
+        [Required]
         public DateTime Date { get; set; }
         [Required]
         [Range(TaskPriorityMinValue, TaskPriorityMaxValue)]
-        public int Priority { get; set; }
-        [MaxLength(TaskNoteMaxLength)]
+        public int Priority { get; set; } = 1;
+        [MaxLength(TaskNoteMaxLength)]  
         public string? Note { get; set; }
         public bool IsCompleted { get; set; }
         public int RecurringTypeId { get; set; }
-        public virtual RecurringType RecurringType { get; set; } = null!;
+        public IEnumerable<SelectRecurringTypeId> RecurringTypes { get; set; } = new List<SelectRecurringTypeId>();
         public int CategoryId { get; set; }
-        public virtual Category Category { get; set; } = null!;
-        [Required]
+        public IEnumerable<SelectCategoryId> Categories { get; set; } = new List<SelectCategoryId>();
         public string UserId { get; set; } = null!;
-        public virtual IdentityUser User { get; set; } = null!;
     }
 }

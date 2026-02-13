@@ -1,10 +1,11 @@
 namespace iGrow
 {
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+
     using iGrow.Data;
     using iGrow.Services.Contracts;
     using iGrow.Services;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
     public class Program
     {
         public static void Main(string[] args)
@@ -17,11 +18,16 @@ namespace iGrow
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                ConfigureIdentity(options, builder.Configuration);
+            })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IMyTaskService, MyTaskService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IRecurringTypeService, RecurringTypeService>();
 
             WebApplication app = builder.Build();
 
@@ -40,6 +46,7 @@ namespace iGrow
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
@@ -51,6 +58,25 @@ namespace iGrow
                .WithStaticAssets();
 
             app.Run();
+        }
+
+        private static void ConfigureIdentity(IdentityOptions options, ConfigurationManager configurationManager)
+        {
+            options.SignIn.RequireConfirmedAccount = configurationManager.GetValue<bool>("Identity:SignIn:RequireConfirmedAccount");
+            options.SignIn.RequireConfirmedEmail = configurationManager.GetValue<bool>("Identity:SignIn:RequireConfirmedEmail");
+            options.SignIn.RequireConfirmedPhoneNumber = configurationManager.GetValue<bool>("Identity:SignIn:RequireConfirmedPhoneNumber");
+
+            options.User.RequireUniqueEmail = configurationManager.GetValue<bool>("Identity:User:RequireUniqueEmail");
+
+            options.Lockout.MaxFailedAccessAttempts = configurationManager.GetValue<int>("Identity:Lockout:MaxFailedAccessAttempts");
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(configurationManager.GetValue<int>("Identity:Lockout:DefaultLockoutTimeSpanMin"));
+
+            options.Password.RequireDigit = configurationManager.GetValue<bool>("Identity:Password:RequireDigit");
+            options.Password.RequireLowercase = configurationManager.GetValue<bool>("Identity:Password:RequireLowercase");
+            options.Password.RequireUppercase = configurationManager.GetValue<bool>("Identity:Password:RequireUppercase");
+            options.Password.RequireNonAlphanumeric = configurationManager.GetValue<bool>("Identity:Password:RequireNonAlphanumeric");
+            options.Password.RequiredLength = configurationManager.GetValue<int>("Identity:Password:RequiredLength");
+            options.Password.RequiredUniqueChars= configurationManager.GetValue<int>("Identity:Password:RequiredUniqueChars");
         }
     }
 }

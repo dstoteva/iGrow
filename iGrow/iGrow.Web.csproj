@@ -9,13 +9,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\iGrow.GCommon\iGrow.GCommon.csproj" />
     <ProjectReference Include="..\iGrow.Services\iGrow.Services.csproj" />
-    <ProjectReference Include="..\ViewModels\iGrow.ViewModels.csproj" />
+    <ProjectReference Include="..\ViewModels\iGrow.Web.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

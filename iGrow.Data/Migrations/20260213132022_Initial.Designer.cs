@@ -12,7 +12,7 @@ using iGrow.Data;
 namespace iGrow.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260206160509_Initial")]
+    [Migration("20260213132022_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -243,6 +243,28 @@ namespace iGrow.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Amounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "At least"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Less than"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Exactly"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Any value"
+                        });
                 });
 
             modelBuilder.Entity("iGrow.Data.Models.Category", b =>
@@ -254,7 +276,8 @@ namespace iGrow.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -264,6 +287,83 @@ namespace iGrow.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Quit a bad habit"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Art"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Task"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Meditation"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Study"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Sports"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Entertainment"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Social"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Finance"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Health"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "Work"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Nutrition"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "Home"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "Outdoor"
+                        },
+                        new
+                        {
+                            Id = 100,
+                            Name = "Other"
+                        });
                 });
 
             modelBuilder.Entity("iGrow.Data.Models.Habit", b =>
@@ -386,6 +486,33 @@ namespace iGrow.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RecurringTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Daily"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Weekly"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Monthly"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Yearly"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "None"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -442,7 +569,7 @@ namespace iGrow.Data.Migrations
             modelBuilder.Entity("iGrow.Data.Models.Habit", b =>
                 {
                     b.HasOne("iGrow.Data.Models.Amount", "Amount")
-                        .WithMany()
+                        .WithMany("Habits")
                         .HasForeignKey("AmountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -454,7 +581,7 @@ namespace iGrow.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("iGrow.Data.Models.RecurringType", "RecurringType")
-                        .WithMany()
+                        .WithMany("Habits")
                         .HasForeignKey("RecurringTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -483,7 +610,7 @@ namespace iGrow.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("iGrow.Data.Models.RecurringType", "RecurringType")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("RecurringTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -501,7 +628,19 @@ namespace iGrow.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("iGrow.Data.Models.Amount", b =>
+                {
+                    b.Navigation("Habits");
+                });
+
             modelBuilder.Entity("iGrow.Data.Models.Category", b =>
+                {
+                    b.Navigation("Habits");
+
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("iGrow.Data.Models.RecurringType", b =>
                 {
                     b.Navigation("Habits");
 

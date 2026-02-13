@@ -1,14 +1,16 @@
 ﻿namespace iGrow.Data.Models
 {
-    using Microsoft.AspNetCore.Identity;
     using System.ComponentModel.DataAnnotations;
+
+    using Microsoft.AspNetCore.Identity;
+
     using static iGrow.GCommon.ValidationConstants;
     public class Habit
     {
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(HabitTitleMaxLength)]
+        [StringLength(HabitTitleMaxLength, MinimumLength = HabitTitleMinLength)]
         public string Title { get; set; } = null!;
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

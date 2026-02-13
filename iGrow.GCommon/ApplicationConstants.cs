@@ -3,6 +3,6 @@
     public static class ApplicationConstants
     {
         public const string SystemName = "iGrow";
-        public const string DateFormat = "yyyy-MM-dd H:mm";
+        public const string DateFormat = "dd/MM/yyyy";
     }
 }

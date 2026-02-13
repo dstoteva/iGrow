@@ -8,7 +8,9 @@
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(AmountNameMaxLength)]
+        [StringLength(AmountNameMaxLength, MinimumLength = AmountNameMinLength)]
         public string Name { get; set; } = null!;
+
+        public virtual ICollection<Habit> Habits { get; set; } = new HashSet<Habit>();
     }
 }

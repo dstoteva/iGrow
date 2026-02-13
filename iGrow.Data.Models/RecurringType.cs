@@ -9,7 +9,9 @@
         [Key]
         public int Id { get; set; }
         [Required]
-        [MaxLength(RecurringTypeNameMaxLength)]
+        [StringLength(RecurringTypeNameMaxLength, MinimumLength = RecurringTypeNameMinLength)]
         public string Name { get; set; } = null!;
+        public virtual ICollection<MyTask> Tasks { get; set; } = new HashSet<MyTask>();
+        public virtual ICollection<Habit> Habits { get; set; } = new HashSet<Habit>();
     }
 }

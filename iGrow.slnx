@@ -7,8 +7,8 @@
     <Project Path="iGrow.Services/iGrow.Services.csproj" Id="21d79b56-3a58-49ad-849f-6f1cbca66ac4" />
   </Folder>
   <Folder Name="/Web/">
-    <Project Path="iGrow/iGrow.csproj" />
-    <Project Path="ViewModels/iGrow.ViewModels.csproj" Id="86ec2eb0-a9bf-4240-a851-5845bb52d65f" />
+    <Project Path="iGrow/iGrow.Web.csproj" />
+    <Project Path="ViewModels/iGrow.Web.ViewModels.csproj" Id="86ec2eb0-a9bf-4240-a851-5845bb52d65f" />
   </Folder>
   <Project Path="iGrow.GCommon/iGrow.GCommon.csproj" Id="d377f09d-a7a9-4dae-8ab7-41c04fcf1dae" />
 </Solution>

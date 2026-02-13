@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\iGrow.GCommon\iGrow.GCommon.csproj" />
+  </ItemGroup>
+
 </Project>
