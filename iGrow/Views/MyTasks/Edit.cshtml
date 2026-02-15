@@ -1,22 +1,19 @@
-﻿@using static iGrow.GCommon.ApplicationConstants
-@using iGrow.Web.ViewModels.MyTask
+﻿@using iGrow.Web.ViewModels.MyTask
 @model MyTaskFormViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var today = DateTime.Now.ToString(DateFormat);
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>MyTask</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="MyTasks" asp-action="Create" method="post">
+        <form asp-controller="MyTasks" asp-action="Edit" method="post">
             @Html.AntiForgeryToken()
-            <input asp-for="Id" type="hidden" value="InvalidInitialIdValue"/>
 
             <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
             <div class="form-group">
@@ -26,8 +23,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" type="date"
-                       value="@(string.IsNullOrEmpty(Model.Date) ? today : Model.Date)" />
+                <input asp-for="Date" class="form-control" type="date"/>
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -66,12 +62,16 @@
                 <span asp-validation-for="RecurringTypeId" name="Recurring Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" /> |
-                <a asp-controller="MyTasks" asp-action="All" class="btn btn-secondary">Cancel</a>
-            </div> 
+                <input type="submit" value="Edit" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
+
+<div>
+    <a asp-action="All">Back to List</a>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

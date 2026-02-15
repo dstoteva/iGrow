@@ -1,43 +1,72 @@
-﻿@using iGrow.Web.ViewModels.MyTask
-@model IEnumerable<MyTaskAllViewModel>
+﻿@model IEnumerable<iGrow.Web.ViewModels.MyTask.MyTaskAllViewModel>
 
-<h2>All Tasks</h2>
+@{
+    ViewData["Title"] = "All Tasks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-@if (Model == null || !Model.Any())
-{
-    <p>No tasks available.</p>
+<h1>All Tasks</h1>
+
+<p>
+    <a asp-controller="MyTasks" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecurringTypeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CategoryName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Note)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCompleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecurringTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
 }
-else
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date</th>
-                <th>Category</th>
-                <th>Priority</th>
-                <th>Completed</th>
-                <th>Recurring</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Date</td>
-                    <td>@item.CategoryName</td>
-                    <td>@item.Priority</td>
-                    <td>@(item.IsCompleted ? "Yes" : "No")</td>
-                    <td>@item.RecurringTypeName</td>
-                    <td>
-                        <a asp-controller="MyTasks" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-controller="MyTasks" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-controller="MyTasks" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+    </tbody>
+</table>

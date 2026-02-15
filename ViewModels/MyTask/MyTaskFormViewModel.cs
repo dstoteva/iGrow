@@ -2,16 +2,17 @@
 {
     using System.ComponentModel.DataAnnotations;
 
-    using iGrow.GCommon;
-
     using static iGrow.GCommon.ValidationConstants;
     public class MyTaskFormViewModel
     {
         [Required]
+        public string Id { get; set; } = null!;
+        [Required]
         [StringLength(TaskTitleMaxLength, MinimumLength = TaskTitleMinLength)]
         public string Title { get; set; } = null!;
         [Required]
-        public DateTime Date { get; set; }
+        [DataType(DataType.Date)]
+        public string Date { get; set; } = null!;
         [Required]
         [Range(TaskPriorityMinValue, TaskPriorityMaxValue)]
         public int Priority { get; set; } = 1;
@@ -22,6 +23,6 @@
         public IEnumerable<SelectRecurringTypeId> RecurringTypes { get; set; } = new List<SelectRecurringTypeId>();
         public int CategoryId { get; set; }
         public IEnumerable<SelectCategoryId> Categories { get; set; } = new List<SelectCategoryId>();
-        public string UserId { get; set; } = null!;
+        public string? UserId { get; set; }
     }
 }
