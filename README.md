@@ -62,7 +62,7 @@ Follow these steps to get the project running locally.
 
 ```bash
 git clone https://github.com/dstoteva/iGrow.git
-cd your-repo-name
+cd iGrow
 ```
 
 ### 2. Restore dependencies
