@@ -1,0 +1,35 @@
+/* Additional project branding / small components for iGrow */
+
+.header-search {
+  max-width: 420px;
+  margin-left: 1rem;
+}
+
+.kpi {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.kpi .value {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+.kpi .label {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+/* small responsive tweaks */
+@media (max-width: 576px) {
+  .navbar .navbar-brand { font-size: 1.05rem; }
+  .card { margin: 0 0.25rem; }
+}
+
+/* subtle badge */
+.badge-igrow {
+  background: rgba(13,110,253,0.12);
+  color: var(--igrow-accent);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+}

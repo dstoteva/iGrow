@@ -1,45 +1,68 @@
-/* Base site overrides for iGrow — compliments Bootstrap */
 :root {
-    --igrow-primary: #0d6efd;
-    --igrow-accent: #0b5ed7;
-    --igrow-muted: #6c757d;
-    --card-shadow: 0 6px 18px rgba(24, 32, 40, 0.06);
+    --brand-primary: #6f42c1; /* purple base */
+    --brand-accent: #8b5cf6;
+    --muted: #e9e7ff;
+    --card-shadow: 0 8px 24px rgba(20, 28, 40, 0.06);
 }
 
-body {
-    background: linear-gradient(180deg, #fbfdff 0%, #f7f9fc 100%);
-    color: #222;
-    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-    color: var(--igrow-accent);
-}
-
-    a:hover {
-        color: #074b9f;
-        text-decoration: none;
-    }
-
-/* Navbar */
+/* Navbar: purple */
 .navbar {
-    background: #ffffff;
+    background: linear-gradient(180deg, var(--brand-primary), var(--brand-accent));
+    color: #fff;
+    padding-top: .45rem;
+    padding-bottom: .45rem;
     box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
 
+    /* Brand & links */
     .navbar .navbar-brand {
+        color: #fff;
         font-weight: 700;
-        color: var(--igrow-accent);
     }
 
-/* Cards */
-.card {
-    border: 0;
-    border-radius: 10px;
-    box-shadow: var(--card-shadow);
+    .navbar .nav-link {
+        color: rgba(255,255,255,0.92);
+    }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            color: #fff;
+        }
+
+    /* Toggler / collapsed icon (navbar-dark makes icon white) */
+    /* ensure toggler button has a subtle border for visibility on purple */
+    .navbar .navbar-toggler {
+        border-color: rgba(255,255,255,0.12);
+    }
+
+/* If you keep a search field in the navbar, make it readable on purple */
+.site-search .form-control {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.08);
 }
+
+    .site-search .form-control::placeholder {
+        color: rgba(255,255,255,0.75);
+    }
+
+.site-search .btn-outline-primary {
+    color: #fff;
+    border-color: rgba(255,255,255,0.12);
+}
+
+    .site-search .btn-outline-primary:hover {
+        background: rgba(255,255,255,0.06);
+        border-color: rgba(255,255,255,0.18);
+    }
+
+/* keep card contrast when navbar is dark */
+.card {
+    background: #fff;
+    color: #222;
+}
+
+/* other existing rules kept below... (no change) */
 
 /* Tables */
 .table-hover tbody tr:hover {
@@ -64,45 +87,28 @@ a {
 
 /* Buttons */
 .btn-primary {
-    background: linear-gradient(180deg, var(--igrow-primary) 0%, #0056b3 100%);
+    background: linear-gradient(180deg, var(--brand-primary) 0%, #0056b3 100%);
     border: none;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.12);
-    border-radius: 8px;
-}
-
-.btn-outline-secondary {
+    box-shadow: 0 4px 10px rgba(13,110,253,0.12);
     border-radius: 8px;
 }
 
 /* Footer */
 footer.footer {
     background: transparent;
-    color: var(--igrow-muted);
+    color: var(--muted);
     padding-top: 1.25rem;
     position: relative;
     z-index: 5;
 }
 
-/* Utility */
-.text-muted-compact {
-    color: #6b7280;
-    font-size: 0.9rem;
-}
-
+/* Layout helpers */
 .container {
     max-width: 1100px;
 }
 
-@media (max-width: 576px) {
-    .page-content {
-        min-height: calc(100vh - 170px);
-        padding-bottom: 2.5rem;
-    }
-
-    .form-card-wrapper .card {
-        padding: 1rem;
-        max-width: 800px;
-        width: 100%;
-        margin: 0 auto;
-    }
+/* Page content reserve so footer won't overlap controls */
+.page-content {
+    min-height: calc(100vh - 170px);
+    padding-bottom: 2rem;
 }

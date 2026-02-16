@@ -1,7 +1,17 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager;
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome to iGrow!</h1>
+    @if (this.SignInManager.IsSignedIn(this.User))
+    {
+        <h3 class="title text-center">Track your habits and tasks.</h3>
+    }
+    else
+    {
+        <h3 class="title text-center"><a class="text-black" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a class="text-black" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Register">Register</a> and let's get started!</h3>
+    }
 </div>

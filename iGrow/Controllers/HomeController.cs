@@ -20,11 +20,6 @@ namespace iGrow.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            string? userId = this._userManager.GetUserId(this.User);
-            if (!String.IsNullOrEmpty(userId))
-            {
-                return RedirectToAction("All", "MyTasks");
-            }
             return View();
         }
 
