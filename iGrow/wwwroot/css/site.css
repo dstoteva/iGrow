@@ -1,31 +1,108 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* Base site overrides for iGrow — compliments Bootstrap */
+:root {
+    --igrow-primary: #0d6efd;
+    --igrow-accent: #0b5ed7;
+    --igrow-muted: #6c757d;
+    --card-shadow: 0 6px 18px rgba(24, 32, 40, 0.06);
 }
 
 body {
-  margin-bottom: 60px;
+    background: linear-gradient(180deg, #fbfdff 0%, #f7f9fc 100%);
+    color: #222;
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+a {
+    color: var(--igrow-accent);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    a:hover {
+        color: #074b9f;
+        text-decoration: none;
+    }
+
+/* Navbar */
+.navbar {
+    background: #ffffff;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+    .navbar .navbar-brand {
+        font-weight: 700;
+        color: var(--igrow-accent);
+    }
+
+/* Cards */
+.card {
+    border: 0;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+}
+
+/* Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(13,110,253,0.03);
+}
+
+.table thead th {
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Forms */
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    box-shadow: none;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(180deg, var(--igrow-primary) 0%, #0056b3 100%);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.12);
+    border-radius: 8px;
+}
+
+.btn-outline-secondary {
+    border-radius: 8px;
+}
+
+/* Footer */
+footer.footer {
+    background: transparent;
+    color: var(--igrow-muted);
+    padding-top: 1.25rem;
+    position: relative;
+    z-index: 5;
+}
+
+/* Utility */
+.text-muted-compact {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.container {
+    max-width: 1100px;
+}
+
+@media (max-width: 576px) {
+    .page-content {
+        min-height: calc(100vh - 170px);
+        padding-bottom: 2.5rem;
+    }
+
+    .form-card-wrapper .card {
+        padding: 1rem;
+        max-width: 800px;
+        width: 100%;
+        margin: 0 auto;
+    }
 }

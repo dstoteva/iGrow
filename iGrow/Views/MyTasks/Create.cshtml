@@ -1,77 +1,90 @@
-﻿@using static iGrow.GCommon.ApplicationConstants
+﻿﻿@using static iGrow.GCommon.ApplicationConstants
 @using iGrow.Web.ViewModels.MyTask
 @model MyTaskFormViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Task";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var today = DateTime.Now.ToString(DateFormat);
 }
 
-<h1>Create</h1>
+<div class="container">
+    <div class="card shadow-sm col-md-6 mx-auto">
+        <div class="card-header">
+            <h4 class="mb-0">Create Task</h4>
+        </div>
+        <div class="card-body">
+            <form asp-controller="MyTasks" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" value="InvalidInitialIdValue" />
 
-<h4>MyTask</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="MyTasks" asp-action="Create" method="post">
-            @Html.AntiForgeryToken()
-            <input asp-for="Id" type="hidden" value="InvalidInitialIdValue"/>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" type="date"
-                       value="@(string.IsNullOrEmpty(Model.Date) ? today : Model.Date)" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Priority" class="control-label"></label>
-                <input asp-for="Priority" class="form-control" />
-                <span asp-validation-for="Priority" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Note" class="control-label"></label>
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label asp-for="IsCompleted" class="control-label">Completed</label>
-                <input class="form-check-input" asp-for="IsCompleted" />
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Category</label>
-                <select asp-for="CategoryId" class="form-control" aria-required="true">
-                    @foreach (var category in Model!.Categories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" name="Category" class="text-danger"></span>
-            </div>
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="RecurringTypeId" class="control-label">Recurring Type</label>
-                <select asp-for="RecurringTypeId" class="form-control" aria-required="true">
-                    @foreach (var recType in Model!.RecurringTypes)
-                    {
-                        <option value="@recType.Id">@recType.Name</option>
-                    }
-                </select>
-                <span asp-validation-for="RecurringTypeId" name="Recurring Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" /> |
-                <a asp-controller="MyTasks" asp-action="All" class="btn btn-secondary">Cancel</a>
-            </div> 
-        </form>
+                <div class="mb-3">
+                    <label asp-for="Note" class="form-label"></label>
+                    <textarea asp-for="Note" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-12 col-md-5">
+                        <label asp-for="Date" class="form-label"></label>
+                        <input asp-for="Date" class="form-control" type="date"
+                               value="@(string.IsNullOrEmpty(Model.Date) ? today : Model.Date)" />
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label asp-for="Priority" class="form-label"></label>
+                        <input asp-for="Priority" class="form-control" type="number" min="1" max="5" />
+                        <span asp-validation-for="Priority" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 col-md-3 d-flex align-items-center">
+                        <div class="form-check mb-0">
+                            <label asp-for="IsCompleted" class="control-label">Completed</label>
+                            <input class="form-check-input" asp-for="IsCompleted" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Category</label>
+                    <select asp-for="CategoryId" class="form-control" aria-required="true">
+                        @foreach (var category in Model!.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RecurringTypeId" class="form-label">Recurring Type</label>
+                    <select asp-for="RecurringTypeId" class="form-control" aria-required="true">
+                        @foreach (var recType in Model!.RecurringTypes)
+                        {
+                            <option value="@recType.Id">@recType.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="RecurringTypeId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <input type="submit" value="Create" class="btn btn-primary"/>
+                    <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
