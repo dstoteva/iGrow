@@ -21,7 +21,7 @@
         public string? Note { get; set; }
         public bool IsCompleted { get; set; }
         public int RecurringTypeId { get; set; }
-        public virtual RecurringType? RecurringType { get; set; }
+        public virtual RecurringType RecurringType { get; set; } = null!;
         public int AmountId { get; set; }
         public virtual Amount? Amount { get; set; }
         public int Metric { get; set; }

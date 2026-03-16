@@ -1,12 +1,14 @@
 ﻿namespace iGrow.Services
 {
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using Microsoft.EntityFrameworkCore;
+
     using iGrow.Data;
     using iGrow.Data.Models;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.MyTask;
-    using Microsoft.EntityFrameworkCore;
-    using System.Globalization;
-    using System.Threading.Tasks;
+
     using static iGrow.GCommon.ApplicationConstants;
 
     public class MyTaskService : IMyTaskService
@@ -30,7 +32,7 @@
                 {
                     Id = t.Id.ToString(),
                     Title = t.Title,
-                    Date = t.Date.ToString(DateFormat),
+                    Date = t.Date.ToString(MyDateFormat),
                     Priority = t.Priority,
                     Note = t.Note,
                     IsCompleted = t.IsCompleted,
@@ -65,7 +67,7 @@
                 .Select(t => new MyTaskFormViewModel
                 {
                     Title = t.Title,
-                    Date = t.Date.ToString(DateFormat),
+                    Date = t.Date.ToString(MyDateFormat),
                     Priority = t.Priority,
                     Note = t.Note,
                     IsCompleted = t.IsCompleted,
@@ -106,7 +108,7 @@
                 {
                     Id = t.Id.ToString(),
                     Title = t.Title,
-                    Date = t.Date.ToString(DateFormat),
+                    Date = t.Date.ToString(MyDateFormat),
                     Priority = t.Priority,
                     Note = t.Note,
                     IsCompleted = t.IsCompleted,
@@ -124,7 +126,7 @@
                 {
                     Id = task.Id.ToString(),
                     Title = task.Title,
-                    Date = task.Date.ToString(DateFormat)
+                    Date = task.Date.ToString(MyDateFormat)
                 };
                 return await Task.FromResult(model);
             }
