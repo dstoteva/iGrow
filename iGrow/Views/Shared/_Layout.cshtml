@@ -1,5 +1,6 @@
 ﻿@using iGrow.GCommon
 @using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,9 +38,15 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="MyTasks" asp-action="All">My Tasks</a>
-                        </li>
+                        @if (this.SignInManager.IsSignedIn(this.User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="MyTasks" asp-action="All">My Tasks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Habits" asp-action="All">My Habits</a>
+                            </li>
+                        }
                     </ul>
 
                     <div class="d-flex align-items-center">

@@ -1,0 +1,126 @@
+﻿﻿@using static iGrow.GCommon.ApplicationConstants
+@using iGrow.Web.ViewModels.Habit
+@model HabitFormViewModel
+
+@{
+    ViewData["Title"] = "Create Habit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var today = DateTime.Now.ToString(MyDateFormat);
+    var tomorrow = DateTime.Now.AddDays(1).ToString(MyDateFormat);
+}
+
+<div class="container">
+    <div class="card shadow-sm col-md-6 mx-auto">
+        <div class="card-header">
+            <h4 class="mb-0">Create Habit</h4>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Habits" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" value="InvalidInitialIdValue" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Note" class="form-label"></label>
+                    <textarea asp-for="Note" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Note" class="text-danger"></span>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-4">
+                        <label asp-for="StartDate" class="form-label"></label>
+                        <input asp-for="StartDate" class="form-control" type="date"
+                               value="@(string.IsNullOrEmpty(Model.StartDate) ? today : Model.StartDate)" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label asp-for="EndDate" class="form-label"></label>
+                        <input asp-for="EndDate" class="form-control" type="date"
+                               value="@(string.IsNullOrEmpty(Model.EndDate) ? tomorrow : Model.EndDate)" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-4 col-md-4">
+                        <label asp-for="Priority" class="form-label"></label>
+                        <input asp-for="Priority" class="form-control" type="number" min="1" max="5" />
+                        <span asp-validation-for="Priority" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-4">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" class="form-control" aria-required="true">
+                            @foreach (var category in Model!.Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label asp-for="RecurringTypeId" class="form-label">Recurring Type</label>
+                        <select asp-for="RecurringTypeId" class="form-control" aria-required="true">
+                            @foreach (var recType in Model!.RecurringTypes)
+                            {
+                                <option value="@recType.Id">@recType.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="RecurringTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-2 col-md-2 d-flex align-items-center">
+                        <div class="form-check mb-0">
+                            <label asp-for="IsCompleted" class="form-label">Completed</label>
+                            <input class="form-check-input" asp-for="IsCompleted" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-6 col-md-4">
+                        <label asp-for="AmountId" class="form-label">Amount</label>
+                        <select asp-for="AmountId" class="form-control" aria-required="true">
+                            @foreach (var amount in Model!.Amounts)
+                            {
+                                <option value="@amount.Id">@amount.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="AmountId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-6 col-md-4">
+                        <label asp-for="Metric" class="form-label"></label>
+                        <input asp-for="Metric" class="form-control" type="number"/>
+                        <span asp-validation-for="Metric" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-6 col-md-4">
+                        <label asp-for="Unit" class="form-label"></label>
+                        <input asp-for="Unit" class="form-control" />
+                        <span asp-validation-for="Unit" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -26,8 +26,10 @@ namespace iGrow
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<IMyTaskService, MyTaskService>();
+            builder.Services.AddScoped<IHabitService, HabitService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IRecurringTypeService, RecurringTypeService>();
+            builder.Services.AddScoped<IAmountService, AmountService>();
 
             WebApplication app = builder.Build();
 
