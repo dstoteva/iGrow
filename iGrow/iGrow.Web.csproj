@@ -20,4 +20,8 @@
     <ProjectReference Include="..\ViewModels\iGrow.Web.ViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 </Project>

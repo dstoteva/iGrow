@@ -9,7 +9,7 @@
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
 
-    public class HabitsController : Controller
+    public class HabitsController : BaseController
     {
         private readonly IHabitService _habitService;
         private readonly ICategoryService _categoryService;

@@ -1,17 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager;
+@inject SignInManager<IdentityUser> SignInManager
+@using iGrow.GCommon
 @{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome to iGrow!</h1>
-    @if (this.SignInManager.IsSignedIn(this.User))
-    {
-        <h3 class="title text-center">Track your habits and tasks.</h3>
-    }
-    else
-    {
-        <h3 class="title text-center"><a class="text-black" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a class="text-black" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Register">Register</a> and let's get started!</h3>
-    }
+<div class="page-header header-filter" data-parallax="true" style="background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+                 url('/images/background.jpg') center/cover no-repeat;
+                 height: 100vh; border-radius: 12px;">
+    <div class="container">
+        <div class="row">
+            <div class="text-center">
+                <h1 class="display-4 text-white">Welcome to @ApplicationConstants.SystemName!</h1>
+                @if (this.SignInManager.IsSignedIn(this.User))
+                {
+                    <h3 class="title text-center">Track your habits and tasks.</h3>
+                }
+                else
+                {
+                    <h3 class="title text-center text-white"><a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Register">Register</a> and let's get started!</h3>
+                }
+            </div>
+        </div>
+    </div>
 </div>

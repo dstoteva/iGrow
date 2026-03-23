@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-namespace iGrow.Web.Controllers
+﻿namespace iGrow.Web.Controllers
 {
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
     [Authorize]
+    [AutoValidateAntiforgeryToken]
     public class BaseController : Controller
     {
     }
