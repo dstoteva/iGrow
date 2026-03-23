@@ -6,6 +6,9 @@
     using iGrow.Services.Contracts;
     using iGrow.Web.Controllers;
     using iGrow.Web.ViewModels.MyTask;
+    using iGrow.GCommon.Exceptions;
+
+    using static iGrow.GCommon.ValidationConstants;
 
     public class MyTasksController : BaseController
     {
@@ -59,19 +62,29 @@
                 string userId = this._userManager.GetUserId(this.User)!;
 
                 await this._taskService.AddTaskAsync(model, userId);
-
-                return RedirectToAction("All");
             }
-            catch (Exception e)
+            catch (EntityCreatePersistFailureException e)
             {
-                this._logger.LogError(e, "An error occurred while creating a new task.");
-                ModelState.AddModelError(string.Empty, "An error occurred while creating the new task. Please try again later.");
+                this._logger.LogError(e, TaskPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, TaskPersistenceErrorMessage);
 
                 model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
                 model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
 
                 return View(model);
             }
+            catch(Exception e)
+            {
+                this._logger.LogError(e, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]

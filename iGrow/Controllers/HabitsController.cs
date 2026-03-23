@@ -2,12 +2,13 @@
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using Microsoft.EntityFrameworkCore;
 
-    using iGrow.Data.Models;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
+    using iGrow.GCommon.Exceptions;
+
+    using static iGrow.GCommon.ValidationConstants;
 
     public class HabitsController : BaseController
     {
@@ -53,7 +54,6 @@
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(HabitFormViewModel model)
         {
             if(!this.ModelState.IsValid)
@@ -70,13 +70,11 @@
                 string userId = this._userManager.GetUserId(this.User)!;
 
                 await this._habitService.AddHabitAsync(model, userId);
-
-                return RedirectToAction(nameof(All));
             }
-            catch (Exception e)
+            catch (EntityCreatePersistFailureException e)
             {
-                this._logger.LogError(e, "An error occurred while creating a new habit.");
-                ModelState.AddModelError(string.Empty, "An error occurred while creating the new habit. Please try again later.");
+                this._logger.LogError(e, HabitPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, HabitPersistenceErrorMessage);
 
                 model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
                 model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
@@ -84,6 +82,18 @@
 
                 return View(model);
             }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, UnexpectedErrorMessage);
+                ModelState.AddModelError(string.Empty, UnexpectedErrorMessage);
+
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();
+
+                return View(model);
+            }
+            return RedirectToAction(nameof(All));
         }
 
         [HttpGet]
@@ -119,7 +129,6 @@
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(HabitFormViewModel model)
         {
             bool habitExists = await this._habitService.GetHabitByIdAsync(model.Id) != null;
@@ -210,7 +219,6 @@
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ConfirmDelete(string id)
         {
             bool habitExists = await this._habitService.GetHabitByIdAsync(id) != null;

@@ -7,17 +7,18 @@
     {
         [Required]
         public string Id { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = RequiredErrorMessage)]
         public string Title { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = RequiredErrorMessage)]
         [DataType(DataType.Date)]
         public string StartDate { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = RequiredErrorMessage)]
         [DataType(DataType.Date)]
         public string EndDate { get; set; } = null!;
-        [Required]
-        [Range(TaskPriorityMinValue, TaskPriorityMaxValue)]
+        [Required(ErrorMessage = RequiredErrorMessage)]
+        [Range(TaskPriorityMinValue, TaskPriorityMaxValue, ErrorMessage = RangeErrorMessage)]
         public int Priority { get; set; }
+        [MaxLength(HabitNoteMaxLength, ErrorMessage = MaxLengthErrorMessage)]
         public string? Note { get; set; }
         public bool IsCompleted { get; set; }
         public int RecurringTypeId { get; set; }

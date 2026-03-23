@@ -7,16 +7,16 @@
     {
         [Required]
         public string Id { get; set; } = null!;
-        [Required]
-        [StringLength(TaskTitleMaxLength, MinimumLength = TaskTitleMinLength)]
+        [Required(ErrorMessage = RequiredErrorMessage)]
+        [StringLength(TaskTitleMaxLength, MinimumLength = TaskTitleMinLength, ErrorMessage = StringLengthErrorMessage)]
         public string Title { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = RequiredErrorMessage)]
         [DataType(DataType.Date)]
         public string Date { get; set; } = null!;
-        [Required]
-        [Range(TaskPriorityMinValue, TaskPriorityMaxValue)]
+        [Required(ErrorMessage = RequiredErrorMessage)]
+        [Range(TaskPriorityMinValue, TaskPriorityMaxValue, ErrorMessage = RangeErrorMessage)]
         public int Priority { get; set; } = 1;
-        [MaxLength(TaskNoteMaxLength)]  
+        [MaxLength(TaskNoteMaxLength, ErrorMessage = MaxLengthErrorMessage)]  
         public string? Note { get; set; }
         public bool IsCompleted { get; set; }
         public int RecurringTypeId { get; set; }
