@@ -10,7 +10,8 @@ namespace iGrow.Services.Contracts
         Task<bool> EditHabitAsync(string id, HabitFormViewModel model);
         Task<HabitDetailsViewModel> GetHabitDetailsAsync(string id);
         Task<HabitDeleteViewModel> GetHabitToBeDeletedAsync(string id);
-        Task DeleteHabitAsync(string id);
+        Task SoftDeleteHabitAsync(string id);
+        Task HardDeleteHabitAsync(string id);
         Task<bool> IsUserCreatorAsync(string habitId, string userId);
     }
 }

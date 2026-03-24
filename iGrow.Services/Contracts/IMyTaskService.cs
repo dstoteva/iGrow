@@ -10,7 +10,8 @@
         Task<bool> EditTaskAsync(string id, MyTaskFormViewModel model);
         Task<MyTaskDetailsViewModel> GetTaskDetailsAsync(string id);
         Task<MyTaskDeleteViewModel> GetTaskToBeDeletedAsync(string id);
-        Task DeleteTaskAsync(string id);
+        Task SoftDeleteTaskAsync(string id);
+        Task HardDeleteTaskAsync(string id);
         Task<bool> IsUserCreatorAsync(string taskId, string userId);
     }
 }

@@ -90,13 +90,6 @@
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            bool taskExists = await this._taskService.GetTaskByIdAsync(id) != null;
-
-            if (!taskExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
 
@@ -180,55 +173,6 @@
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            bool taskExists = await this._taskService.GetTaskByIdAsync(id) != null;
-
-            if (!taskExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
-            string userId = this._userManager.GetUserId(this.User)!;
-            bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
-
-            if (!isUserCreator)
-            {
-                return Forbid();
-            }
-
-            MyTaskDetailsViewModel model = await this._taskService.GetTaskDetailsAsync(id);
-
-            return View(model);
-        }
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
-        {
-            bool taskExists = await this._taskService.GetTaskByIdAsync(id) != null;
-
-            if (!taskExists)
-            {
-                throw new EntityNotFoundException();
-            }
-            string userId = this._userManager.GetUserId(this.User)!;
-            bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
-
-            if (!isUserCreator)
-            {
-                return Forbid();
-            }
-
-            MyTaskDeleteViewModel model = await this._taskService.GetTaskToBeDeletedAsync(id);
-            return View(model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> ConfirmDelete(string id)
-        {
-            bool taskExists = await this._taskService.GetTaskByIdAsync(id) != null;
-
-            if (!taskExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
 
@@ -239,8 +183,77 @@
 
             try
             {
-                await this._taskService.DeleteTaskAsync(id);
+                MyTaskDetailsViewModel model = await this._taskService.GetTaskDetailsAsync(id);
+
+                return View(model);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, "An error occurred while getting the task.");
+                ModelState.AddModelError(string.Empty, "An error occurred while getting the task. Please try again later.");
+
+                return RedirectToAction("Details", new { id });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            string userId = this._userManager.GetUserId(this.User)!;
+            bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
+
+            if (!isUserCreator)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                MyTaskDeleteViewModel model = await this._taskService.GetTaskToBeDeletedAsync(id);
+                return View(model);
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+             catch (Exception e)
+            {
+                this._logger.LogError(e, "An error occurred while preparing the delete confirmation.");
+                ModelState.AddModelError(string.Empty, "An error occurred while preparing the delete confirmation. Please try again later.");
+
+                return RedirectToAction("Details", new { id });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(string id)
+        {
+            string userId = this._userManager.GetUserId(this.User)!;
+            bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
+
+            if (!isUserCreator)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                await this._taskService.SoftDeleteTaskAsync(id);
+
                 return RedirectToAction("All");
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (EntityPersistFailureException e)
+            {
+                this._logger.LogError(e, TaskPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, TaskPersistenceErrorMessage);
+
+                return RedirectToAction("Delete", new { id });
             }
             catch (Exception e)
             {

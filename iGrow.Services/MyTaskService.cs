@@ -25,6 +25,7 @@
         {
             return await this._dbContext.Tasks
                 .Where(t => t.UserId == userId.ToString())
+                .Where(t => !t.IsDeleted)
                 .Include(t => t.RecurringType)
                 .Include(t => t.Category)
                 .OrderBy(t => t.Priority)
@@ -63,8 +64,9 @@
 
         public async Task<MyTaskFormViewModel> GetTaskByIdAsync(string id)
         {
-            return await this._dbContext.Tasks
+            MyTaskFormViewModel? task = await this._dbContext.Tasks
                 .Where(t => t.Id.ToString() == id)
+                .Where(t => !t.IsDeleted)
                 .Select(t => new MyTaskFormViewModel
                 {
                     Title = t.Title,
@@ -74,7 +76,16 @@
                     IsCompleted = t.IsCompleted,
                     RecurringTypeId = t.RecurringTypeId,
                     CategoryId = t.CategoryId
-                }).FirstOrDefaultAsync() ?? await Task.FromResult<MyTaskFormViewModel>(null);
+                }).FirstOrDefaultAsync();
+
+            if(task != null)
+            {
+                return task;
+            }
+            else
+            {
+                throw new EntityNotFoundException();
+            }
         }
 
         public async Task<bool> EditTaskAsync(string id, MyTaskFormViewModel model)
@@ -84,7 +95,7 @@
 
             int resultCount = 0;
 
-            if (task != null)
+            if (task != null && !task.IsDeleted)
             {
                 task.Title = model.Title;
                 task.Date = taskDate;
@@ -109,6 +120,7 @@
         {
             return await this._dbContext.Tasks
                 .Where(t => t.Id.ToString() == id)
+                .Where(t => !t.IsDeleted)
                 .Select(t => new MyTaskDetailsViewModel
                 {
                     Id = t.Id.ToString(),
@@ -125,7 +137,7 @@
         {
             MyTask? task = await this._dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
 
-            if (task != null)
+            if (task != null && !task.IsDeleted)
             {
                 MyTaskDeleteViewModel model = new MyTaskDeleteViewModel
                 {
@@ -137,18 +149,49 @@
             }
             else
             {
-                return await Task.FromResult<MyTaskDeleteViewModel>(null);
+                throw new EntityNotFoundException();
             }
         }
 
-        public async Task DeleteTaskAsync(string id)
+        public async Task SoftDeleteTaskAsync(string id)
         {
             MyTask? task = await this._dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
 
-            if (task != null)
+            if (task != null && !task.IsDeleted)
+            {
+                task.IsDeleted = true;
+                this._dbContext.Update(task);
+
+                int resultCount = await this._dbContext.SaveChangesAsync();
+
+                if(resultCount != 1)
+                {
+                    throw new EntityPersistFailureException();
+                }
+            }
+            else
+            {
+                throw new EntityNotFoundException();
+            }
+        }
+
+        public async Task HardDeleteTaskAsync(string id)
+        {
+            MyTask? task = await this._dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
+
+            if (task != null && !task.IsDeleted)
             {
                 this._dbContext.Tasks.Remove(task);
-                await this._dbContext.SaveChangesAsync();
+                int resultCount = await this._dbContext.SaveChangesAsync();
+
+                if (resultCount != 1)
+                {
+                    throw new EntityPersistFailureException();
+                }
+            }
+            else
+            {
+                throw new EntityNotFoundException();
             }
         }
         public async Task<bool> IsUserCreatorAsync(string taskId, string userId)

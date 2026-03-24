@@ -25,6 +25,7 @@
         {
             return await this._dbContext.Habits
                 .Where(h => h.UserId == userId)
+                .Where(h => !h.IsDeleted)
                 .Include(h => h.RecurringType)
                 .Include(h => h.Amount)
                 .Include(h => h.Category)
@@ -70,8 +71,9 @@
 
         public async Task<HabitFormViewModel> GetHabitByIdAsync(string id)
         {
-            return await this._dbContext.Habits
+            HabitFormViewModel? habit = await this._dbContext.Habits
                 .Where(h => h.Id.ToString() == id)
+                .Where(h => !h.IsDeleted)
                 .Select(h => new HabitFormViewModel
                 {
                     Title = h.Title,
@@ -86,7 +88,16 @@
                     Unit = h.Unit ?? string.Empty,
                     CategoryId = h.CategoryId
                 })
-                .FirstOrDefaultAsync() ?? new HabitFormViewModel();
+                .FirstOrDefaultAsync();
+
+            if(habit != null)
+            {
+                return habit;
+            }
+            else
+            {
+                throw new EntityNotFoundException();
+            }
         }
 
         public async Task<bool> EditHabitAsync(string id, HabitFormViewModel model)
@@ -97,7 +108,7 @@
 
             int resultCount = 0;
 
-            if (habit != null)
+            if (habit != null && !habit.IsDeleted)
             {
                 habit.Title = model.Title;
                 habit.StartDate = startDate;
@@ -126,6 +137,7 @@
         {
             return await this._dbContext.Habits
                 .Where(h => h.Id.ToString() == id)
+                .Where(h => !h.IsDeleted)
                 .Include(h => h.RecurringType)
                 .Include(h => h.Amount)
                 .Include(h => h.Category)
@@ -151,7 +163,7 @@
         {
             Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
 
-            if (habit != null)
+            if (habit != null && !habit.IsDeleted)
             {
                 HabitDeleteViewModel model = new HabitDeleteViewModel
                 {
@@ -164,22 +176,48 @@
             }
             else
             {
-                throw new CultureNotFoundException("Habit not found.");
+                throw new EntityNotFoundException();
             }
         }
 
-        public async Task DeleteHabitAsync(string id)
+        public async Task SoftDeleteHabitAsync(string id)
         {
             Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
 
-            if (habit != null)
+            if (habit != null && !habit.IsDeleted)
             {
-                this._dbContext.Habits.Remove(habit);
-                await this._dbContext.SaveChangesAsync();
+                habit.IsDeleted = true;
+                this._dbContext.Habits.Update(habit);
+
+                int resultCount = await this._dbContext.SaveChangesAsync();
+
+                if (resultCount != 1)
+                {
+                    throw new EntityPersistFailureException();
+                }
             }
             else
             {
-                throw new CultureNotFoundException("Habit not found.");
+                throw new EntityNotFoundException();
+            }
+        }
+        public async Task HardDeleteHabitAsync(string id)
+        {
+            Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
+
+            if (habit != null && !habit.IsDeleted)
+            {
+                this._dbContext.Habits.Remove(habit);
+                int resultCount = await this._dbContext.SaveChangesAsync();
+
+                if(resultCount != 1)
+                {
+                    throw new EntityPersistFailureException();
+                }
+            }
+            else
+            {
+                throw new EntityNotFoundException();
             }
         }
 

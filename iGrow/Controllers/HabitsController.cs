@@ -99,13 +99,6 @@
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
-            bool habitExists = await this._habitService.GetHabitByIdAsync(id) != null;
-
-            if (!habitExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
 
@@ -192,59 +185,6 @@
         [HttpGet]
         public async Task<IActionResult> Details(string id)
         {
-            bool habitExists = await this._habitService.GetHabitByIdAsync(id) != null;
-
-            if (!habitExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
-            string userId = this._userManager.GetUserId(this.User)!;
-            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
-
-            if (!isUserCreator)
-            {
-                return Forbid();
-            }
-
-            HabitDetailsViewModel model = await this._habitService.GetHabitDetailsAsync(id);
-
-            return View(model);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Delete(string id)
-        {
-            bool habitExists = await this._habitService.GetHabitByIdAsync(id) != null;
-
-            if (!habitExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
-            string userId = this._userManager.GetUserId(this.User)!;
-            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
-
-            if (!isUserCreator)
-            {
-                return Forbid();
-            }
-
-            HabitDeleteViewModel model = await this._habitService.GetHabitToBeDeletedAsync(id);
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ConfirmDelete(string id)
-        {
-            bool habitExists = await this._habitService.GetHabitByIdAsync(id) != null;
-
-            if (!habitExists)
-            {
-                throw new EntityNotFoundException();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
 
@@ -255,9 +195,79 @@
 
             try
             {
-                await this._habitService.DeleteHabitAsync(id);
+                HabitDetailsViewModel model = await this._habitService.GetHabitDetailsAsync(id);
+
+                return View(model);
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, "An error occurred while getting the habit.");
+                ModelState.AddModelError(string.Empty, "An error occurred while getting the habit. Please try again later.");
+
+                return RedirectToAction("Details", new { id });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            string userId = this._userManager.GetUserId(this.User)!;
+            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
+
+            if (!isUserCreator)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                HabitDeleteViewModel model = await this._habitService.GetHabitToBeDeletedAsync(id);
+                return View(model);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, "An error occurred while preparing the delete confirmation.");
+                ModelState.AddModelError(string.Empty, "An error occurred while preparing the delete confirmation. Please try again later.");
+
+                return RedirectToAction("Details", new { id });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDelete(string id)
+        {
+            string userId = this._userManager.GetUserId(this.User)!;
+            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
+
+            if (!isUserCreator)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                await this._habitService.SoftDeleteHabitAsync(id);
 
                 return RedirectToAction(nameof(All));
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (EntityPersistFailureException e)
+            {
+                this._logger.LogError(e, HabitPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, HabitPersistenceErrorMessage);
+
+                return RedirectToAction("Delete", new { id });
             }
             catch (Exception e)
             {
