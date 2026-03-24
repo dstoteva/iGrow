@@ -2,6 +2,7 @@
 {
     using iGrow.Data;
     using iGrow.Data.Models;
+    using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
     using Microsoft.EntityFrameworkCore;
@@ -88,11 +89,13 @@
                 .FirstOrDefaultAsync() ?? new HabitFormViewModel();
         }
 
-        public async Task EditHabitAsync(string id, HabitFormViewModel model)
+        public async Task<bool> EditHabitAsync(string id, HabitFormViewModel model)
         {
             Habit? habit = await this._dbContext.Habits.FindAsync(Guid.Parse(id));
             DateTime startDate = Convert.ToDateTime(model.StartDate, CultureInfo.InvariantCulture);
             DateTime endDate = Convert.ToDateTime(model.EndDate, CultureInfo.InvariantCulture);
+
+            int resultCount = 0;
 
             if (habit != null)
             {
@@ -109,12 +112,14 @@
                 habit.CategoryId = model.CategoryId;
 
                 this._dbContext.Update(habit);
-                await this._dbContext.SaveChangesAsync();
+                resultCount = await this._dbContext.SaveChangesAsync();
             }
             else
             {
-                throw new CultureNotFoundException("Habit not found.");
+                throw new EntityNotFoundException();
             }
+
+            return resultCount == 1;
         }
 
         public async Task<HabitDetailsViewModel> GetHabitDetailsAsync(string id)

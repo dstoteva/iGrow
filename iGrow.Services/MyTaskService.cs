@@ -10,6 +10,7 @@
     using iGrow.Web.ViewModels.MyTask;
 
     using static iGrow.GCommon.ApplicationConstants;
+    using iGrow.GCommon.Exceptions;
 
     public class MyTaskService : IMyTaskService
     {
@@ -76,10 +77,12 @@
                 }).FirstOrDefaultAsync() ?? await Task.FromResult<MyTaskFormViewModel>(null);
         }
 
-        public async Task EditTaskAsync(string id, MyTaskFormViewModel model)
+        public async Task<bool> EditTaskAsync(string id, MyTaskFormViewModel model)
         {
             MyTask? task = await this._dbContext.Tasks.FirstOrDefaultAsync(t => t.Id.ToString() == id);
             DateTime taskDate = Convert.ToDateTime(model.Date, CultureInfo.InvariantCulture);
+
+            int resultCount = 0;
 
             if (task != null)
             {
@@ -92,12 +95,14 @@
                 task.CategoryId = model.CategoryId;
 
                 this._dbContext.Update(task);
-                await this._dbContext.SaveChangesAsync();
+                resultCount = await this._dbContext.SaveChangesAsync();
             }
             else
             {
-                await Task.FromResult<MyTaskFormViewModel>(null);
+                throw new EntityNotFoundException();
             }
+
+            return resultCount == 1;
         }
 
         public async Task<MyTaskDetailsViewModel> GetTaskDetailsAsync(string id)

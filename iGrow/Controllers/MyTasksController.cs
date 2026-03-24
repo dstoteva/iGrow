@@ -63,7 +63,7 @@
 
                 await this._taskService.AddTaskAsync(model, userId);
             }
-            catch (EntityCreatePersistFailureException e)
+            catch (EntityPersistFailureException e)
             {
                 this._logger.LogError(e, TaskPersistenceErrorMessage);
                 ModelState.AddModelError(string.Empty, TaskPersistenceErrorMessage);
@@ -94,7 +94,7 @@
 
             if (!taskExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
@@ -109,7 +109,7 @@
 
             if (model == null)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
@@ -122,13 +122,6 @@
         [HttpPost]
         public async Task<IActionResult> Edit(MyTaskFormViewModel model)
         {
-            bool taskExists = await this._taskService.GetTaskByIdAsync(model.Id) != null;
-
-            if (!taskExists)
-            {
-                return NotFound();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             string? taskId = model.Id;
 
@@ -149,14 +142,36 @@
 
             try
             {
-                await this._taskService.EditTaskAsync(taskId, model);
+                bool isEditSuccessful = await this._taskService.EditTaskAsync(taskId, model);
+
+                if (!isEditSuccessful)
+                {
+                    throw new EntityPersistFailureException();
+                }
 
                 return RedirectToAction("Details", new { id = taskId });
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (EntityPersistFailureException e)
+            {
+                this._logger.LogError(e, TaskPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, TaskPersistenceErrorMessage);
+
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+
+                return View(model);
             }
             catch (Exception e)
             {
                 this._logger.LogError(e, "An error occurred while editing the task.");
                 ModelState.AddModelError(string.Empty, "An error occurred while editing the task. Please try again later.");
+
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
 
                 return View(model);
             }
@@ -169,7 +184,7 @@
 
             if (!taskExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
@@ -191,7 +206,7 @@
 
             if (!taskExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
             string userId = this._userManager.GetUserId(this.User)!;
             bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
@@ -211,7 +226,7 @@
 
             if (!taskExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;

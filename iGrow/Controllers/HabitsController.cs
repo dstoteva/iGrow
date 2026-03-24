@@ -71,7 +71,7 @@
 
                 await this._habitService.AddHabitAsync(model, userId);
             }
-            catch (EntityCreatePersistFailureException e)
+            catch (EntityPersistFailureException e)
             {
                 this._logger.LogError(e, HabitPersistenceErrorMessage);
                 ModelState.AddModelError(string.Empty, HabitPersistenceErrorMessage);
@@ -103,7 +103,7 @@
 
             if (!habitExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
@@ -118,7 +118,7 @@
 
             if(model == null)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
@@ -131,13 +131,6 @@
         [HttpPost]
         public async Task<IActionResult> Edit(HabitFormViewModel model)
         {
-            bool habitExists = await this._habitService.GetHabitByIdAsync(model.Id) != null;
-
-            if (!habitExists)
-            {
-                return NotFound();
-            }
-
             string userId = this._userManager.GetUserId(this.User)!;
             string? habitId = model.Id;
 
@@ -159,14 +152,38 @@
 
             try
             {
-                await this._habitService.EditHabitAsync(habitId, model);
+                bool isEditSuccessfull = await this._habitService.EditHabitAsync(habitId, model);
+
+                if (!isEditSuccessfull)
+                {
+                    throw new EntityPersistFailureException();
+                }
 
                 return RedirectToAction("Details", new { id = habitId });
+            }
+            catch(EntityNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (EntityPersistFailureException e)
+            {
+                this._logger.LogError(e, HabitPersistenceErrorMessage);
+                ModelState.AddModelError(string.Empty, HabitPersistenceErrorMessage);
+
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();
+
+                return View(model);
             }
             catch (Exception e)
             {
                 this._logger.LogError(e, "An error occurred while editing the habit.");
                 ModelState.AddModelError(string.Empty, "An error occurred while editing the habit. Please try again later.");
+
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();
 
                 return View(model);
             }
@@ -179,7 +196,7 @@
 
             if (!habitExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
@@ -202,7 +219,7 @@
 
             if (!habitExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
@@ -225,7 +242,7 @@
 
             if (!habitExists)
             {
-                return NotFound();
+                throw new EntityNotFoundException();
             }
 
             string userId = this._userManager.GetUserId(this.User)!;
