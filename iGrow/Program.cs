@@ -60,6 +60,8 @@ namespace iGrow
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseStatusCodePagesWithRedirects("Home/Error/{0}");
+
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",

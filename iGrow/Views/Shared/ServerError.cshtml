@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "500 Internal Server Error";
+}
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,900" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="~/css/errorStyle.css" />
+<body>
+    <div id="internalServerError">
+        <div class="internalServerError">
+            <div class="internalServerError-500">
+                <h1>Oops!</h1>
+            </div>
+            <p>Something went wrong on our end. Please try again later.</p>
+            <a asp-controller="Home" asp-action="Index">Go To Homepage</a>
+        </div>
+    </div>
+</body>
