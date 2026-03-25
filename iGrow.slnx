@@ -7,6 +7,7 @@
     <Project Path="iGrow.Services/iGrow.Services.csproj" Id="21d79b56-3a58-49ad-849f-6f1cbca66ac4" />
   </Folder>
   <Folder Name="/Web/">
+    <Project Path="iGrow.Web.Infrastructure/iGrow.Web.Infrastructure.csproj" Id="8df58b40-3b23-4606-bbbe-62407ddd603e" />
     <Project Path="iGrow/iGrow.Web.csproj" />
     <Project Path="ViewModels/iGrow.Web.ViewModels.csproj" Id="86ec2eb0-a9bf-4240-a851-5845bb52d65f" />
   </Folder>

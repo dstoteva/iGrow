@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\iGrow.GCommon\iGrow.GCommon.csproj" />
     <ProjectReference Include="..\iGrow.Services\iGrow.Services.csproj" />
+    <ProjectReference Include="..\iGrow.Web.Infrastructure\iGrow.Web.Infrastructure.csproj" />
     <ProjectReference Include="..\ViewModels\iGrow.Web.ViewModels.csproj" />
   </ItemGroup>
 

@@ -6,6 +6,9 @@ namespace iGrow
     using iGrow.Data;
     using iGrow.Services.Contracts;
     using iGrow.Services;
+    using iGrow.Web.Infrastructure.Extensions;
+    using iGrow.Data.Repository;
+
     public class Program
     {
         public static void Main(string[] args)
@@ -25,11 +28,17 @@ namespace iGrow
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddScoped<IMyTaskService, MyTaskService>();
-            builder.Services.AddScoped<IHabitService, HabitService>();
-            builder.Services.AddScoped<ICategoryService, CategoryService>();
-            builder.Services.AddScoped<IRecurringTypeService, RecurringTypeService>();
-            builder.Services.AddScoped<IAmountService, AmountService>();
+            builder.Services.RegisterRepositories(typeof(MyTaskRepository));
+            builder.Services.RegisterRepositories(typeof(HabitRepository));
+            builder.Services.RegisterRepositories(typeof(CategoryRepository));
+            builder.Services.RegisterRepositories(typeof(RecurringTypeRepository));
+            builder.Services.RegisterRepositories(typeof(AmountRepository));
+
+            builder.Services.RegisterUserServices(typeof(MyTaskService));
+            builder.Services.RegisterUserServices(typeof(HabitService));
+            builder.Services.RegisterUserServices(typeof(CategoryService));
+            builder.Services.RegisterUserServices(typeof(RecurringTypeService));
+            builder.Services.RegisterUserServices(typeof(AmountService));
 
             WebApplication app = builder.Build();
 
