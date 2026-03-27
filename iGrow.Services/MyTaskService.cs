@@ -24,7 +24,7 @@
         public async Task<IEnumerable<MyTaskAllViewModel>> GetAllTasksAsync(string userId)
         {
             return await this._dbContext.Tasks
-                .Where(t => t.UserId == userId.ToString())
+                .Where(t => t.UserId.ToString() == userId)
                 .Where(t => !t.IsDeleted)
                 .Include(t => t.RecurringType)
                 .Include(t => t.Category)
@@ -56,7 +56,7 @@
                 IsCompleted = model.IsCompleted,
                 RecurringTypeId = model.RecurringTypeId,
                 CategoryId = model.CategoryId,
-                UserId = userId
+                UserId = Guid.Parse(userId)
             };
             await this._dbContext.Tasks.AddAsync(task);
             await this._dbContext.SaveChangesAsync();
@@ -200,7 +200,7 @@
 
             if (task != null)
             {
-                return task.UserId == userId;
+                return task.UserId.ToString() == userId;
             }
             return false;
         }

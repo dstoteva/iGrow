@@ -1,13 +1,12 @@
 ﻿namespace iGrow.Controllers
 {
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-
+    using iGrow.Data.Models;
+    using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.Controllers;
     using iGrow.Web.ViewModels.MyTask;
-    using iGrow.GCommon.Exceptions;
-
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using static iGrow.GCommon.ValidationConstants;
 
     public class MyTasksController : BaseController
@@ -15,9 +14,9 @@
         private readonly IMyTaskService _taskService;
         private readonly ICategoryService _categoryService;
         private readonly IRecurringTypeService _recurringTypeService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<MyTasksController> _logger;
-        public MyTasksController(IMyTaskService taskService, UserManager<IdentityUser> userManager, ILogger<MyTasksController> logger,
+        public MyTasksController(IMyTaskService taskService, UserManager<ApplicationUser> userManager, ILogger<MyTasksController> logger,
             ICategoryService categoryService, IRecurringTypeService recurringTypeService)
         {
             this._taskService = taskService;

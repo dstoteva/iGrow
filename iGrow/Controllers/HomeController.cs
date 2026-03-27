@@ -1,19 +1,18 @@
 namespace iGrow.Controllers
 {
-    using System.Diagnostics;
-
-    using Microsoft.AspNetCore.Mvc;
+    using iGrow.Data.Models;
+    using iGrow.Web.Controllers;
+    using iGrow.Web.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
-
-    using iGrow.Web.ViewModels;
-    using iGrow.Web.Controllers;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Diagnostics;
 
     public class HomeController : BaseController
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(UserManager<IdentityUser> userManager)
+        public HomeController(UserManager<ApplicationUser> userManager)
         {
             this._userManager = userManager;
         }

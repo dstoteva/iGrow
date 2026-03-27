@@ -1,8 +1,7 @@
 ﻿namespace iGrow.Data.Models
 {
     using System.ComponentModel.DataAnnotations;
-
-    using Microsoft.AspNetCore.Identity;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     using static iGrow.GCommon.ValidationConstants;
     public class Habit
@@ -29,9 +28,9 @@
         [Required]
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
-        [Required]
-        public string UserId { get; set; } = null!;
-        public virtual IdentityUser User { get; set; } = null!;
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public virtual ApplicationUser User { get; set; } = null!;
         public bool IsDeleted { get; set; }
     }
 }

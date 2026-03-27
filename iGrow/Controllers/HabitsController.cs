@@ -2,11 +2,11 @@
 {
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
     using iGrow.GCommon.Exceptions;
+    using iGrow.Data.Models;
 
     using static iGrow.GCommon.ValidationConstants;
 
@@ -16,10 +16,10 @@
         private readonly ICategoryService _categoryService;
         private readonly IRecurringTypeService _recurringTypeService;
         private readonly IAmountService _amountService;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<HabitsController> _logger;
 
-        public HabitsController(IHabitService habitService, UserManager<IdentityUser> userManager, ILogger<HabitsController> logger,
+        public HabitsController(IHabitService habitService, UserManager<ApplicationUser> userManager, ILogger<HabitsController> logger,
             ICategoryService categoryService, IRecurringTypeService recurringTypeService, IAmountService amountService)
         {
             this._habitService = habitService;

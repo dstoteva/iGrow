@@ -4,10 +4,10 @@ namespace iGrow
     using Microsoft.EntityFrameworkCore;
 
     using iGrow.Data;
-    using iGrow.Services.Contracts;
     using iGrow.Services;
     using iGrow.Web.Infrastructure.Extensions;
     using iGrow.Data.Repository;
+    using iGrow.Data.Models;
 
     public class Program
     {
@@ -21,10 +21,11 @@ namespace iGrow
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
                 ConfigureIdentity(options, builder.Configuration);
             })
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 

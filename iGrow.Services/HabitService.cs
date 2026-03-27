@@ -24,7 +24,7 @@
         public async Task<IEnumerable<HabitAllViewModel>> GetAllHabitsAsync(string userId)
         {
             return await this._dbContext.Habits
-                .Where(h => h.UserId == userId)
+                .Where(h => h.UserId.ToString() == userId)
                 .Where(h => !h.IsDeleted)
                 .Include(h => h.RecurringType)
                 .Include(h => h.Amount)
@@ -62,7 +62,7 @@
                 Metric = model.Metric,
                 Unit = model.Unit,
                 CategoryId = model.CategoryId,
-                UserId = userId
+                UserId = Guid.Parse(userId)
             };
 
             await this._dbContext.Habits.AddAsync(habit);
@@ -227,7 +227,7 @@
 
             if (habit != null)
             {
-                return habit.UserId == userId;
+                return habit.UserId.ToString() == userId;
             }
             return false;
         }
