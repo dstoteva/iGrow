@@ -65,6 +65,21 @@
                 return View(model);
             }
 
+            DateTime startDate = DateTime.Parse(model.StartDate);
+            DateTime endDate = DateTime.Parse(model.EndDate);
+
+
+            if (DateTime.Compare(startDate, endDate) >= 0)
+            {
+                ModelState.AddModelError(nameof(model.StartDate), StartDateMustBeBeforeEndDate);
+
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();
+
+                return View(model);
+            }
+
             try
             {
                 string userId = this._userManager.GetUserId(this.User)!;
@@ -136,6 +151,21 @@
 
             if(!this.ModelState.IsValid)
             {
+                model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
+                model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
+                model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();
+
+                return View(model);
+            }
+
+            DateTime startDate = DateTime.Parse(model.StartDate);
+            DateTime endDate = DateTime.Parse(model.EndDate);
+
+
+            if (DateTime.Compare(startDate, endDate) >= 0)
+            {
+                ModelState.AddModelError(nameof(model.StartDate), StartDateMustBeBeforeEndDate);
+
                 model.RecurringTypes = this._recurringTypeService.GetAllRecurringTypesAsync().GetAwaiter().GetResult();
                 model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
                 model.Amounts = this._amountService.GetAllAmountsAsync().GetAwaiter().GetResult();

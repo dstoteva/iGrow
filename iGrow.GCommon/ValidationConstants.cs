@@ -33,7 +33,7 @@
         public const int AmountNameMinLength = 1;
         public const int AmountNameMaxLength = 10;
 
-        //Error messages
+        //Generic error messages
         public const string RequiredErrorMessage = "The {0} field is required.";
         public const string StringLengthErrorMessage = "The {0} must be between {2} and {1} characters long.";
         public const string RangeErrorMessage = "The {0} must be between {1} and {2}.";
@@ -43,5 +43,8 @@
         public const string TaskPersistenceErrorMessage = "An error occurred while creating the new task. Please try again later.";
         public const string HabitPersistenceErrorMessage = "An error occurred while creating the new habit. Please try again later.";
         public const string UnexpectedErrorMessage = "An unexpected error occurred. Please try again later.";
+
+        //Error messages
+        public const string StartDateMustBeBeforeEndDate = "Habit Start Date must be before End Date.";
     }
 }
