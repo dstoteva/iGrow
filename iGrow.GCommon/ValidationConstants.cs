@@ -45,6 +45,10 @@
         public const string UnexpectedErrorMessage = "An unexpected error occurred. Please try again later.";
 
         //Error messages
+        public const string RoleSeedingFailure = "There was an error while trying to seed roles.";
+        public const string AdminUserSeedingNotFound = "Admin Email not found in configuration.";
+        public const string AdminUserSeedingPasswordNotFound = "Admin Password not found in configuration.";
+        public const string AdminUserSeedingException = "There was an error while trying to seed Admin user.";
         public const string StartDateMustBeBeforeEndDate = "Habit Start Date must be before End Date.";
     }
 }

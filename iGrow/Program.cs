@@ -8,6 +8,8 @@ namespace iGrow
     using iGrow.Web.Infrastructure.Extensions;
     using iGrow.Data.Repository;
     using iGrow.Data.Models;
+    using iGrow.Data.Seeding;
+    using iGrow.Data.Seeding.Contracts;
 
     public class Program
     {
@@ -20,6 +22,8 @@ namespace iGrow
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services.AddTransient<IIdentitySeeder, IdentitySeeder>();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -60,6 +64,9 @@ namespace iGrow
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseRolesSeeder();
+            app.UseAdminSeeder();
 
             app.UseStatusCodePagesWithRedirects("Home/Error/{0}");
 
