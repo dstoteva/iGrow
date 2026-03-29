@@ -1,12 +1,11 @@
-﻿﻿@using static iGrow.GCommon.ApplicationConstants
-@using iGrow.Web.ViewModels.Habit
+﻿﻿@using iGrow.GCommon
 @model HabitFormViewModel
 
 @{
     ViewData["Title"] = "Create Habit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var today = DateTime.Now.ToString(MyDateFormat);
-    var tomorrow = DateTime.Now.AddDays(1).ToString(MyDateFormat);
+
+    var today = DateTime.Now.ToString(ApplicationConstants.MyDateFormat);
+    var tomorrow = DateTime.Now.AddDays(1).ToString(ApplicationConstants.MyDateFormat);
 }
 
 <div class="container">

@@ -1,11 +1,10 @@
-﻿﻿@using static iGrow.GCommon.ApplicationConstants
-@using iGrow.Web.ViewModels.MyTask
+﻿﻿@using iGrow.GCommon
 @model MyTaskFormViewModel
 
 @{
     ViewData["Title"] = "Create Task";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var today = DateTime.Now.ToString(MyDateFormat);
+
+    var today = DateTime.Now.ToString(ApplicationConstants.MyDateFormat);
 }
 
 <div class="container">

@@ -1,7 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ApplicationUser> SignInManager
-@using iGrow.Data.Models
-@using iGrow.GCommon
+﻿@using iGrow.GCommon
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -12,7 +9,7 @@
         <div class="row">
             <div class="text-center">
                 <h1 class="display-4 text-white">Welcome to @ApplicationConstants.SystemName!</h1>
-                @if (this.SignInManager.IsSignedIn(this.User))
+                @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <h3 class="title text-center text-white">Track your habits and tasks.</h3>
                 }
