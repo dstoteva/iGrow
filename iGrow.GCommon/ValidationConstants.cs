@@ -50,5 +50,12 @@
         public const string AdminUserSeedingPasswordNotFound = "Admin Password not found in configuration.";
         public const string AdminUserSeedingException = "There was an error while trying to seed Admin user.";
         public const string StartDateMustBeBeforeEndDate = "Habit Start Date must be before End Date.";
+
+        //Application User error messages
+        public const string UserRoleAssignmentIdentityErrorMessage = "There was an error assigning role {0} to the user! Ensure that user and role exists and user is not assigned to the role!";
+        public const string UserRoleAssignmentFailureMessage = "There was an error {1} role {0} to the user! Please review log information!";
+        public const string UserRoleRemoveIdentityErrorMessage = "There was an error removing role {0} from the user! Ensure that user and role exists and user is assigned to the role!";
+        public const string UserDeleteNotExistMessage = "There was an error deleting the user! Ensure that the user exists!";
+        public const string UserDeleteFailureErrorMessage = "There was an error deleting the user! Please review log information!";
     }
 }

@@ -10,7 +10,7 @@
 
     public class IdentitySeeder : IIdentitySeeder
     {
-        private readonly string[] applicationRoles = new[]
+        public static string[] ApplicationRoles = new[]
         {
             "Admin",
             "User"
@@ -28,7 +28,7 @@
 
         public async Task SeedRolesAsync()
         {
-            foreach (string role in applicationRoles)
+            foreach (string role in ApplicationRoles)
             {
                 bool roleExists = await _roleManager.RoleExistsAsync(role);
 
@@ -68,11 +68,11 @@
                     throw new InvalidOperationException(AdminUserSeedingException);
                 }
 
-                bool isInRole = await _userManager.IsInRoleAsync(newAdminUser, applicationRoles[0]);
+                bool isInRole = await _userManager.IsInRoleAsync(newAdminUser, ApplicationRoles[0]);
 
                 if (!isInRole)
                 {
-                    IdentityResult result = await _userManager.AddToRoleAsync(newAdminUser, applicationRoles[0]);
+                    IdentityResult result = await _userManager.AddToRoleAsync(newAdminUser, ApplicationRoles[0]);
 
                     if (!result.Succeeded)
                     {

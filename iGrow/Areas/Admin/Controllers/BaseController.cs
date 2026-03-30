@@ -1,11 +1,13 @@
-﻿namespace iGrow.Web.Controllers
+﻿namespace iGrow.Web.Areas.Admin.Controllers
 {
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize(Roles = "Admin,User")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     [AutoValidateAntiforgeryToken]
     public abstract class BaseController : Controller
     {
+
     }
 }

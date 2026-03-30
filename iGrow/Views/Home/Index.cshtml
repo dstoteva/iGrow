@@ -4,18 +4,18 @@
 }
 <div class="page-header header-filter" data-parallax="true" style="background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
                  url('/images/background.jpg') center/cover no-repeat;
-                 height: 100vh; border-radius: 12px;">
-    <div class="container">
+    height: 100vh; border-radius: 12px; position: relative;">
+    <div class="container align-items-center" style="position: absolute; top: 30%; height: 6em; margin-top: -3em;">
         <div class="row">
             <div class="text-center">
                 <h1 class="display-4 text-white">Welcome to @ApplicationConstants.SystemName!</h1>
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
-                    <h3 class="title text-center text-white">Track your habits and tasks.</h3>
+                    <h3 class="title text-center text-white ">Track your habits and tasks.</h3>
                 }
                 else
                 {
-                    <h3 class="title text-center text-white"><a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Register">Register</a> and let's get started!</h3>
+                    <h3 class="title text-center text-white "><a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Login">Login</a> or <a class="text-white" style="display:inline-block; text-decoration: underline;" asp-area="Identity" asp-page="/Account/Register">Register</a> and let's get started!</h3>
                 }
             </div>
         </div>

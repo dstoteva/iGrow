@@ -8,6 +8,7 @@ namespace iGrow.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System.Diagnostics;
 
+    [AllowAnonymous]
     public class HomeController : BaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -16,19 +17,19 @@ namespace iGrow.Controllers
         {
             this._userManager = userManager;
         }
-        [AllowAnonymous]
+        
         public IActionResult Index()
         {
             return View();
         }
 
-        [AllowAnonymous]
+
         public IActionResult Privacy()
         {
             return View();
         }
 
-        [AllowAnonymous]
+        [Route("Home/Error")]
         [Route("Home/Error/{statusCode}")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int statusCode)

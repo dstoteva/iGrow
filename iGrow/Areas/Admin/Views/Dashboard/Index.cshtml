@@ -1,0 +1,17 @@
+﻿@{
+    this.ViewData["Title"] = "Admin dashboard";
+}
+
+<div class="page-header header-filter" data-parallax="true" style="background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+    url('../../images/AdminBackground.jpg') center/cover no-repeat;
+    height: 100vh; border-radius: 12px; position: relative;">
+    <div class="container text-center" style="position: absolute; top: 30%; height: 6em; margin-top: -3em;">
+        <h1 class="text-white">@this.ViewData["Title"]</h1>
+        <div class="text-center">
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">Go to Users</a>
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="Categories" asp-action="Index">Go to Categories</a>
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="RecurringTypes" asp-action="Index">Go to Recurring Types</a>
+            <a class="btn btn-primary" asp-area="Admin" asp-controller="Amounts" asp-action="Index">Go to Amounts</a>
+        </div>
+    </div>
+</div>
