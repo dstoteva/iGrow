@@ -1,14 +1,14 @@
 ﻿namespace iGrow.Web.Controllers
 {
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.AspNetCore.Mvc;
-
+    using iGrow.Data.Models;
+    using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
-    using iGrow.GCommon.Exceptions;
-    using iGrow.Data.Models;
-
+    using iGrow.Web.ViewModels.MyTask;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
     using static iGrow.GCommon.ValidationConstants;
+    using static iGrow.GCommon.ApplicationConstants;
 
     public class HabitsController : BaseController
     {
@@ -31,13 +31,35 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(HabitAllViewModel model)
         {
             string userId = this._userManager.GetUserId(this.User)!;
 
-            IEnumerable<HabitAllViewModel> model = await this._habitService.GetAllHabitsAsync(userId);
+            IEnumerable<HabitViewModel> habitViewModel = await this._habitService.GetAllHabitsAsync(userId, model.SearchQuery, model.PageNumber);
 
-            return View(model);
+            int habitsCount = await this._habitService.GetHabitsCountAsync(userId, model.SearchQuery);
+
+            HabitAllViewModel allHabitsViewModel = new HabitAllViewModel()
+            {
+                SearchQuery = model.SearchQuery,
+                PageNumber = model.PageNumber,
+                TotalPages = (int)Math.Ceiling(habitsCount / (double)DefaultEntitiesPerPage),
+                ShowingPages = model.ShowingPages,
+                StartPageIndex = (model.StartPageIndex / 10) * 10,
+                Habits = habitViewModel.ToArray(),
+            };
+
+            if (allHabitsViewModel.PageNumber > allHabitsViewModel.TotalPages && allHabitsViewModel.TotalPages != 0)
+            {
+                return RedirectToAction(nameof(All), new HabitAllViewModel
+                {
+                    SearchQuery = model.SearchQuery,
+                    PageNumber = allHabitsViewModel.TotalPages,
+                    ShowingPages = model.ShowingPages
+                });
+            }
+
+            return View(allHabitsViewModel);
         }
 
 

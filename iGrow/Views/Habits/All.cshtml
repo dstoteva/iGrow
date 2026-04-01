@@ -1,10 +1,75 @@
-﻿@model IEnumerable<HabitAllViewModel>
+﻿@model HabitAllViewModel
 
 @{
     ViewData["Title"] = "All Habits";
+    int endPageIndex = Math.Min((Model.StartPageIndex + Model.ShowingPages), Model.TotalPages);
 }
 
 <div class="container">
+    <div class="col-md-6 mb-2 mb-md-0">
+        <form asp-controller="Habits" asp-action="All" method="get" class="mb-0 d-flex">
+            <div class="input-group">
+                <input asp-for="SearchQuery" type="text" class="form-control" placeholder="Search by title..."/>
+                      
+                    @if (!string.IsNullOrEmpty(Model.SearchQuery?.ToString()))
+                    {
+                    <a href="@Url.Action("All", "Habits")" class="btn btn-outline-secondary" title="Clear search">
+                        <i class="bi bi-x-lg" style="color:#000000"></i>
+                        </a>
+                    }
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6 text-md-end">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-md-end justify-content-center mb-0">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="Habits" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       class="page-link" tabindex="-1">Previous</a>
+                </li>
+                    
+                @if (Model.StartPageIndex > 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                @for (int i = Model.StartPageIndex; i <= endPageIndex; i++)
+                {
+                    @if (i > 0)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : string.Empty)">
+                            <a asp-area="" asp-controller="Habits" asp-action="All"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               asp-route-pageNumber="@i"
+                               class="page-link">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (endPageIndex < Model.TotalPages)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="Habits" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       class="page-link">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 class="h3">Habits</h1>
         <a asp-controller="Habits" asp-action="Create" class="btn btn-success">
@@ -27,7 +92,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model == null || !Model.Any())
+                    @if (Model == null || !Model.Habits.Any())
                     {
                         <tr>
                             <td colspan="7" class="text-center py-4">No habits found.</td>
@@ -35,7 +100,7 @@
                     }
                     else
                     {
-                        foreach (var item in Model)
+                        foreach (var item in Model.Habits)
                         {
                             <tr>
                                 <td>@item.Title</td>

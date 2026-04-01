@@ -4,7 +4,7 @@ namespace iGrow.Services.Contracts
 {
     public interface IHabitService
     {
-        Task<IEnumerable<HabitAllViewModel>> GetAllHabitsAsync(string userId);
+        Task<IEnumerable<HabitViewModel>> GetAllHabitsAsync(string userId, string? searchQuery, int pageNumber);
         Task AddHabitAsync(HabitFormViewModel model, string userId);
         Task<HabitFormViewModel> GetHabitByIdAsync(string id);
         Task<bool> EditHabitAsync(string id, HabitFormViewModel model);
@@ -13,5 +13,6 @@ namespace iGrow.Services.Contracts
         Task SoftDeleteHabitAsync(string id);
         Task HardDeleteHabitAsync(string id);
         Task<bool> IsUserCreatorAsync(string habitId, string userId);
+        Task<int> GetHabitsCountAsync(string userId, string? searchQuery);
     }
 }

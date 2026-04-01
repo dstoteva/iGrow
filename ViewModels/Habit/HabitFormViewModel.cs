@@ -17,7 +17,7 @@
         public string EndDate { get; set; } = null!;
         [Required(ErrorMessage = RequiredErrorMessage)]
         [Range(TaskPriorityMinValue, TaskPriorityMaxValue, ErrorMessage = RangeErrorMessage)]
-        public int Priority { get; set; }
+        public int Priority { get; set; } = 1;
         [MaxLength(HabitNoteMaxLength, ErrorMessage = MaxLengthErrorMessage)]
         public string? Note { get; set; }
         public bool IsCompleted { get; set; }

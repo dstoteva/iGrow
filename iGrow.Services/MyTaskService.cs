@@ -21,16 +21,47 @@
             this._dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<MyTaskAllViewModel>> GetAllTasksAsync(string userId)
+        public async Task<IEnumerable<MyTaskViewModel>> GetAllTasksAsync(string userId, string? searchQuery = null, int pageNumber = 1)
         {
-            return await this._dbContext.Tasks
+            int takeCount = DefaultEntitiesPerPage;
+            int skipCount = (pageNumber - 1) * takeCount;
+
+            IQueryable<MyTask> tasksFetchQuery = this._dbContext.Tasks
+                .AsNoTracking()
+                .OrderBy(t => t.Priority)
+                .ThenBy(t => t.Title);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLowerInvariant();
+
+                tasksFetchQuery = tasksFetchQuery
+                    .Where(t => t.Title.ToLower().Contains(searchQuery))
+                    .AsQueryable();
+            }
+
+            tasksFetchQuery = tasksFetchQuery
                 .Where(t => t.UserId.ToString() == userId)
                 .Where(t => !t.IsDeleted)
+                .AsQueryable();
+
+            if (skipCount > 0)
+            {
+                tasksFetchQuery = tasksFetchQuery
+                    .Skip(skipCount)
+                    .AsQueryable();
+            }
+            if (takeCount > 0)
+            {
+                tasksFetchQuery = tasksFetchQuery
+                    .Take(takeCount)
+                    .AsQueryable();
+            }
+
+            return await tasksFetchQuery
                 .Include(t => t.RecurringType)
                 .Include(t => t.Category)
-                .OrderBy(t => t.Priority)
-                .ThenBy(t => t.Title)
-                .Select(t => new MyTaskAllViewModel
+                .Select(t => new MyTaskViewModel
                 {
                     Id = t.Id.ToString(),
                     Title = t.Title,
@@ -203,6 +234,30 @@
                 return task.UserId.ToString() == userId;
             }
             return false;
+        }
+
+        public async Task<int> GetTasksCountAsync(string userId, string? searchQuery = null)
+        {
+            IQueryable<MyTask> tasksFetchQuery = this._dbContext.Tasks
+                .AsNoTracking();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLowerInvariant();
+
+                tasksFetchQuery = tasksFetchQuery
+                    .Where(h => h.Title.ToLower().Contains(searchQuery))
+                    .AsQueryable();
+            }
+
+            tasksFetchQuery = tasksFetchQuery
+                .Where(h => h.UserId.ToString() == userId)
+                .Where(h => !h.IsDeleted)
+                .AsQueryable();
+
+            int count = await tasksFetchQuery.CountAsync();
+
+            return count;
         }
     }
 }

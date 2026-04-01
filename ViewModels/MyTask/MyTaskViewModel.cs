@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace iGrow.Web.ViewModels.MyTask
+{
+    public class MyTaskViewModel
+    {
+        public string Id { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        [DataType(DataType.Date)]
+        public string Date { get; set; } = null!;
+        public int Priority { get; set; }
+        public string? Note { get; set; }
+        public bool IsCompleted { get; set; }
+        public string RecurringTypeName { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
+    }
+}

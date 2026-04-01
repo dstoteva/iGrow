@@ -6,7 +6,6 @@
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.VisualBasic;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
@@ -21,17 +20,49 @@
             this._dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<HabitAllViewModel>> GetAllHabitsAsync(string userId)
+        public async Task<IEnumerable<HabitViewModel>> GetAllHabitsAsync(string userId, string? searchQuery = null, int pageNumber = 1)
         {
-            return await this._dbContext.Habits
+            int takeCount = DefaultEntitiesPerPage;
+            int skipCount = (pageNumber - 1) * takeCount;
+
+            IQueryable<Habit> habitsFetchQuery = this._dbContext.Habits
+                .AsNoTracking()
+                .OrderBy(h => h.Priority)
+                .ThenBy(h => h.Title);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLowerInvariant();
+
+                habitsFetchQuery = habitsFetchQuery
+                    .Where(h => h.Title.ToLower().Contains(searchQuery))
+                    .AsQueryable();
+            }
+
+            habitsFetchQuery = habitsFetchQuery
                 .Where(h => h.UserId.ToString() == userId)
                 .Where(h => !h.IsDeleted)
+                .AsQueryable();
+
+            if(skipCount > 0)
+            {
+                habitsFetchQuery = habitsFetchQuery
+                    .Skip(skipCount)
+                    .AsQueryable();
+            }
+
+            if(takeCount > 0)
+            {
+                habitsFetchQuery = habitsFetchQuery
+                    .Take(takeCount)
+                    .AsQueryable();
+            }
+
+            return await habitsFetchQuery
                 .Include(h => h.RecurringType)
                 .Include(h => h.Amount)
                 .Include(h => h.Category)
-                .OrderBy(h => h.Priority)
-                .ThenBy(h => h.Title)
-                .Select(h => new HabitAllViewModel
+                .Select(h => new HabitViewModel
                 {
                     Id = h.Id.ToString(),
                     Title = h.Title,
@@ -230,6 +261,30 @@
                 return habit.UserId.ToString() == userId;
             }
             return false;
+        }
+
+        public async Task<int> GetHabitsCountAsync(string userId, string? searchQuery = null)
+        {
+            IQueryable<Habit> habitsFetchQuery = this._dbContext.Habits
+                .AsNoTracking();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim().ToLowerInvariant();
+
+                habitsFetchQuery = habitsFetchQuery
+                    .Where(h => h.Title.ToLower().Contains(searchQuery))
+                    .AsQueryable();
+            }
+
+            habitsFetchQuery = habitsFetchQuery
+                .Where(h => h.UserId.ToString() == userId)
+                .Where(h => !h.IsDeleted)
+                .AsQueryable();
+
+            int count = await habitsFetchQuery.CountAsync();
+
+            return count;
         }
     }
 }

@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using static iGrow.GCommon.ValidationConstants;
+    using static iGrow.GCommon.ApplicationConstants;
 
     public class MyTasksController : BaseController
     {
@@ -26,13 +27,35 @@
             this._logger = logger;
         }
         [HttpGet]
-        public async Task<IActionResult> All()
+        public async Task<IActionResult> All(MyTaskAllViewModel model)
         {
             string userId = this._userManager.GetUserId(this.User)!;
 
-            IEnumerable<MyTaskAllViewModel> model = await this._taskService.GetAllTasksAsync(userId);
+            IEnumerable<MyTaskViewModel> taskViewModel = await this._taskService.GetAllTasksAsync(userId, model.SearchQuery, model.PageNumber);
 
-            return View(model);
+            int tasksCount = await this._taskService.GetTasksCountAsync(userId, model.SearchQuery);
+
+            MyTaskAllViewModel allTasksViewModel = new MyTaskAllViewModel()
+            {
+                SearchQuery = model.SearchQuery,
+                PageNumber = model.PageNumber,
+                TotalPages = (int)Math.Ceiling(tasksCount / (double)DefaultEntitiesPerPage),
+                ShowingPages = model.ShowingPages,
+                StartPageIndex = (model.StartPageIndex / 10) * 10,
+                Tasks = taskViewModel.ToArray(),
+            };
+
+            if(allTasksViewModel.PageNumber > allTasksViewModel.TotalPages && allTasksViewModel.TotalPages > 0)
+            {
+                return RedirectToAction(nameof(All), new MyTaskAllViewModel
+                {
+                    SearchQuery = model.SearchQuery,
+                    PageNumber = allTasksViewModel.TotalPages,
+                    ShowingPages = model.ShowingPages
+                });
+            }
+
+            return View(allTasksViewModel);
         }
         [HttpGet]
         public IActionResult Create()

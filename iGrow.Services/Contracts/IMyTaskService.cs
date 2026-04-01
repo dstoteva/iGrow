@@ -4,7 +4,7 @@
 
     public interface IMyTaskService
     {
-        Task<IEnumerable<MyTaskAllViewModel>> GetAllTasksAsync(string userId);
+        Task<IEnumerable<MyTaskViewModel>> GetAllTasksAsync(string userId, string? searchQuery, int pageNumber);
         Task AddTaskAsync(MyTaskFormViewModel model, string userId);
         Task<MyTaskFormViewModel> GetTaskByIdAsync(string id);
         Task<bool> EditTaskAsync(string id, MyTaskFormViewModel model);
@@ -13,5 +13,6 @@
         Task SoftDeleteTaskAsync(string id);
         Task HardDeleteTaskAsync(string id);
         Task<bool> IsUserCreatorAsync(string taskId, string userId);
+        Task<int> GetTasksCountAsync(string userId, string? searchQuery);
     }
 }

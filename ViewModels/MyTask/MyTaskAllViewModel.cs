@@ -1,17 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace iGrow.Web.ViewModels.MyTask
+﻿namespace iGrow.Web.ViewModels.MyTask
 {
     public class MyTaskAllViewModel
     {
-        public string Id { get; set; } = null!;
-        public string Title { get; set; } = null!;
-        [DataType(DataType.Date)]
-        public string Date { get; set; } = null!;
-        public int Priority { get; set; }
-        public string? Note { get; set; }
-        public bool IsCompleted { get; set; }
-        public string RecurringTypeName { get; set; } = null!;
-        public string CategoryName { get; set; } = null!;
+        public string? SearchQuery { get; set; }
+        public int PageNumber { get; set; } = 1;
+        public int TotalPages { get; set; } = 1;
+        public int ShowingPages { get; set; } = 5;
+        public int StartPageIndex { get; set; } = 1;
+        public ICollection<MyTaskViewModel> Tasks { get; set; } = new List<MyTaskViewModel>();
     }
 }

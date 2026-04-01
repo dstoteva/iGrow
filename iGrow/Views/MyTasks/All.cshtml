@@ -1,59 +1,124 @@
-﻿@model IEnumerable<MyTaskAllViewModel>
+﻿@model MyTaskAllViewModel
 
 @{
     ViewData["Title"] = "All Tasks";
+    int endPageIndex = Math.Min((Model.StartPageIndex + Model.ShowingPages), Model.TotalPages);
 }
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h3">Tasks</h1>
-        <a asp-controller="MyTasks" asp-action="Create" class="btn btn-success">
-            New Task
-        </a>
+    <div class="col-md-6 mb-2 mb-md-0">
+        <form asp-controller="MyTasks" asp-action="All" method="get" class="mb-0 d-flex">
+            <div class="input-group">
+                <input asp-for="SearchQuery" type="text" class="form-control" placeholder="Search by title..."/>
+                
+                    @if (!string.IsNullOrEmpty(Model.SearchQuery?.ToString()))
+                    {
+                    <a href="@Url.Action("All", "MyTasks")" class="btn btn-outline-secondary" title="Clear search">
+                        <i class="bi bi-x-lg" style="color: #000000"></i>
+                        </a>
+                    }
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
+    <div class="col-md-6 text-md-end">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-md-end justify-content-center mb-0">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="MyTasks" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       class="page-link" tabindex="-1">Previous</a>
+                </li>
+                    
+                @if (Model.StartPageIndex > 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                @for (int i = Model.StartPageIndex; i <= endPageIndex; i++)
+                {
+                    @if (i > 0)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : string.Empty)">
+                            <a asp-area="" asp-controller="MyTasks" asp-action="All"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               asp-route-pageNumber="@i"
+                               class="page-link">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (endPageIndex < Model.TotalPages)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="MyTasks" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       class="page-link">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Tasks</h1>
+    <a asp-controller="MyTasks" asp-action="Create" class="btn btn-success">
+        New Task
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Priority</th>
+                    <th>Completed</th>
+                    <th>Category</th>
+                    <th>Recurring</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model == null || !Model.Tasks.Any())
+                {
                     <tr>
-                        <th>Title</th>
-                        <th>Date</th>
-                        <th>Priority</th>
-                        <th>Completed</th>
-                        <th>Category</th>
-                        <th>Recurring</th>
-                        <th class="text-end">Actions</th>
+                        <td colspan="7" class="text-center py-4">No tasks found.</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @if (Model == null || !Model.Any())
+                }
+                else
+                {
+                    foreach (var item in Model.Tasks)
                     {
                         <tr>
-                            <td colspan="7" class="text-center py-4">No tasks found.</td>
+                            <td>@item.Title</td>
+                            <td>@item.Date</td>
+                            <td>@item.Priority</td>
+                            <td>@(item.IsCompleted ? "Yes" : "No")</td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.RecurringTypeName</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
                         </tr>
                     }
-                    else
-                    {
-                        foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Title</td>
-                                <td>@item.Date</td>
-                                <td>@item.Priority</td>
-                                <td>@(item.IsCompleted ? "Yes" : "No")</td>
-                                <td>@item.CategoryName</td>
-                                <td>@item.RecurringTypeName</td>
-                                <td class="text-end">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Details</a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
     </div>
 </div>
