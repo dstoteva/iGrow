@@ -93,6 +93,19 @@ namespace iGrow.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    // Assign default role to newly registered user
+                    IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "User");
+
+                    if (!roleResult.Succeeded)
+                    {
+                        foreach (var error in roleResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+
+                        // If role assignment failed, show registration page with errors
+                        return Page();
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
