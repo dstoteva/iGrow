@@ -7,7 +7,7 @@
         Task<IEnumerable<MyTaskViewModel>> GetAllTasksAsync(string userId, string? searchQuery, int pageNumber);
         Task AddTaskAsync(MyTaskFormViewModel model, string userId);
         Task<MyTaskFormViewModel> GetTaskByIdAsync(string id);
-        Task<bool> EditTaskAsync(string id, MyTaskFormViewModel model);
+        Task EditTaskAsync(string id, MyTaskFormViewModel model);
         Task<MyTaskDetailsViewModel> GetTaskDetailsAsync(string id);
         Task<MyTaskDeleteViewModel> GetTaskToBeDeletedAsync(string id);
         Task SoftDeleteTaskAsync(string id);

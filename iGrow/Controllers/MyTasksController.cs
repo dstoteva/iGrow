@@ -157,12 +157,7 @@
 
             try
             {
-                bool isEditSuccessful = await this._taskService.EditTaskAsync(taskId, model);
-
-                if (!isEditSuccessful)
-                {
-                    throw new EntityPersistFailureException();
-                }
+                await this._taskService.EditTaskAsync(taskId, model);
 
                 return RedirectToAction("Details", new { id = taskId });
             }
