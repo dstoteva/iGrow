@@ -1,28 +1,33 @@
 ﻿namespace iGrow.Services
 {
-    using Microsoft.EntityFrameworkCore;
-
     using iGrow.Data;
+    using iGrow.Data.Models;
+    using iGrow.Data.Repository.Contracts;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels;
+    using Microsoft.EntityFrameworkCore;
 
     public class CategoryService : ICategoryService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryService(ApplicationDbContext dbContext)
+        public CategoryService(ICategoryRepository categoryRepository)
         {
-            this._dbContext = dbContext;
+            this._categoryRepository = categoryRepository;
         }
         public async Task<IEnumerable<SelectCategoryId>> GetAllCategoriesAsync()
         {
-            return await this._dbContext.Categories
+            IEnumerable<Category> categories = await this._categoryRepository
+                .GetAllCategoriesNoTrackingAsync();
+
+            IEnumerable<SelectCategoryId> projected = categories
                 .Select(c => new SelectCategoryId
                 {
                     Id = c.Id,
                     Name = c.Name
-                })
-                .ToListAsync();
+                });
+
+            return projected;
         }
     }
 }
