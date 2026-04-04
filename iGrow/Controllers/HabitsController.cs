@@ -197,12 +197,7 @@
 
             try
             {
-                bool isEditSuccessfull = await this._habitService.EditHabitAsync(habitId, model);
-
-                if (!isEditSuccessfull)
-                {
-                    throw new EntityPersistFailureException();
-                }
+                await this._habitService.EditHabitAsync(habitId, model);
 
                 return RedirectToAction("Details", new { id = habitId });
             }

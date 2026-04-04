@@ -1,78 +1,61 @@
 ﻿namespace iGrow.Services
 {
-    using iGrow.Data;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+
     using iGrow.Data.Models;
+    using iGrow.Data.Repository.Contracts;
     using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels.Habit;
-    using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Threading.Tasks;
+
     using static iGrow.GCommon.ApplicationConstants;
 
     public class HabitService : IHabitService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IHabitRepository _habitRepository;
 
-        public HabitService(ApplicationDbContext dbContext)
+        public HabitService(IHabitRepository habitRepository)
         {
-            this._dbContext = dbContext;
+            this._habitRepository = habitRepository;
         }
 
         public async Task<IEnumerable<HabitViewModel>> GetAllHabitsAsync(string userId, string? searchQuery = null, int pageNumber = 1)
         {
-            int takeCount = DefaultEntitiesPerPage;
-            int skipCount = (pageNumber - 1) * takeCount;
 
-            IQueryable<Habit> habitsFetchQuery = this._dbContext.Habits
-                .AsNoTracking()
-                .OrderBy(h => h.Priority)
-                .ThenBy(h => h.Title);
+            Expression<Func<Habit, bool>>? filterQuery = null;
 
-            if (!string.IsNullOrEmpty(searchQuery))
+            if (!string.IsNullOrWhiteSpace(searchQuery))
             {
                 searchQuery = searchQuery.Trim().ToLowerInvariant();
 
-                habitsFetchQuery = habitsFetchQuery
-                    .Where(h => h.Title.ToLower().Contains(searchQuery))
-                    .AsQueryable();
+                filterQuery = h => (h.Title.ToLower().Contains(searchQuery));
             }
 
-            habitsFetchQuery = habitsFetchQuery
-                .Where(h => h.UserId.ToString() == userId)
-                .Where(h => !h.IsDeleted)
-                .AsQueryable();
+            int skipCount = (pageNumber - 1) * DefaultEntitiesPerPage;
 
-            if(skipCount > 0)
-            {
-                habitsFetchQuery = habitsFetchQuery
-                    .Skip(skipCount)
-                    .AsQueryable();
-            }
+            IEnumerable<Habit> habitsFetchQuery = await this._habitRepository
+                .GetAllHabitsNoTrackingByUserIdWithCategoryAndRecurringTypeAndAmountAsync(
+                    userId: userId,
+                    filterQuery: filterQuery,
+                    skipCnt: skipCount,
+                    takeCnt: DefaultEntitiesPerPage);
 
-            if(takeCount > 0)
-            {
-                habitsFetchQuery = habitsFetchQuery
-                    .Take(takeCount)
-                    .AsQueryable();
-            }
-
-            return await habitsFetchQuery
-                .Include(h => h.RecurringType)
-                .Include(h => h.Amount)
-                .Include(h => h.Category)
-                .Select(h => new HabitViewModel
+            IEnumerable<HabitViewModel> projected = habitsFetchQuery
+                .Select(t => new HabitViewModel
                 {
-                    Id = h.Id.ToString(),
-                    Title = h.Title,
-                    StartDate = h.StartDate.ToString(MyDateFormat),
-                    EndDate = h.EndDate.ToString(MyDateFormat),
-                    Priority = h.Priority,
-                    IsCompleted = h.IsCompleted,
-                    CategoryName = h.Category.Name
-                })
-                .ToListAsync(); 
+                    Id = t.Id.ToString(),
+                    Title = t.Title,
+                    StartDate = t.StartDate.ToString(MyDateFormat),
+                    EndDate = t.EndDate.ToString(MyDateFormat),
+                    Priority = t.Priority,
+                    IsCompleted = t.IsCompleted,
+                    CategoryName = t.Category.Name
+                });
+
+            return projected;
         }
 
         public async Task AddHabitAsync(HabitFormViewModel model, string userId)
@@ -96,34 +79,35 @@
                 UserId = Guid.Parse(userId)
             };
 
-            await this._dbContext.Habits.AddAsync(habit);
-            await this._dbContext.SaveChangesAsync();
+            bool success = await this._habitRepository.AddHabitAsync(habit);
+
+            if (!success)
+            {
+                throw new EntityPersistFailureException();
+            }
         }
 
         public async Task<HabitFormViewModel> GetHabitByIdAsync(string id)
         {
-            HabitFormViewModel? habit = await this._dbContext.Habits
-                .Where(h => h.Id.ToString() == id)
-                .Where(h => !h.IsDeleted)
-                .Select(h => new HabitFormViewModel
-                {
-                    Title = h.Title,
-                    StartDate = h.StartDate.ToString(MyDateFormat),
-                    EndDate = h.EndDate.ToString(MyDateFormat),
-                    Priority = h.Priority,
-                    Note = h.Note,
-                    IsCompleted = h.IsCompleted,
-                    RecurringTypeId = h.RecurringTypeId,
-                    AmountId = h.AmountId,
-                    Metric = h.Metric,
-                    Unit = h.Unit ?? string.Empty,
-                    CategoryId = h.CategoryId
-                })
-                .FirstOrDefaultAsync();
+            Habit? habit = await this._habitRepository
+                .GetHabitByIdAsync(id);
 
-            if(habit != null)
+            if (habit != null)
             {
-                return habit;
+                return new HabitFormViewModel
+                {
+                    Title = habit.Title,
+                    StartDate = habit.StartDate.ToString(MyDateFormat),
+                    EndDate = habit.EndDate.ToString(MyDateFormat),
+                    Priority = habit.Priority,
+                    Note = habit.Note,
+                    IsCompleted = habit.IsCompleted,
+                    RecurringTypeId = habit.RecurringTypeId,
+                    AmountId = habit.AmountId,
+                    Metric = habit.Metric,
+                    Unit = habit.Unit ?? string.Empty,
+                    CategoryId = habit.CategoryId
+                };
             }
             else
             {
@@ -131,16 +115,15 @@
             }
         }
 
-        public async Task<bool> EditHabitAsync(string id, HabitFormViewModel model)
+        public async Task EditHabitAsync(string id, HabitFormViewModel model)
         {
-            Habit? habit = await this._dbContext.Habits.FindAsync(Guid.Parse(id));
-            DateTime startDate = Convert.ToDateTime(model.StartDate, CultureInfo.InvariantCulture);
-            DateTime endDate = Convert.ToDateTime(model.EndDate, CultureInfo.InvariantCulture);
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(id);
 
-            int resultCount = 0;
-
-            if (habit != null && !habit.IsDeleted)
+            if (habit != null)
             {
+                DateTime startDate = Convert.ToDateTime(model.StartDate, CultureInfo.InvariantCulture);
+                DateTime endDate = Convert.ToDateTime(model.EndDate, CultureInfo.InvariantCulture);
+
                 habit.Title = model.Title;
                 habit.StartDate = startDate;
                 habit.EndDate = endDate;
@@ -153,46 +136,50 @@
                 habit.Unit = model.Unit;
                 habit.CategoryId = model.CategoryId;
 
-                this._dbContext.Update(habit);
-                resultCount = await this._dbContext.SaveChangesAsync();
+                bool success = await this._habitRepository.EditHabitAsync(habit);
+
+                if (!success)
+                {
+                    throw new EntityPersistFailureException();
+                }
             }
             else
             {
                 throw new EntityNotFoundException();
             }
-
-            return resultCount == 1;
         }
 
         public async Task<HabitDetailsViewModel> GetHabitDetailsAsync(string id)
         {
-            return await this._dbContext.Habits
-                .Where(h => h.Id.ToString() == id)
-                .Where(h => !h.IsDeleted)
-                .Include(h => h.RecurringType)
-                .Include(h => h.Amount)
-                .Include(h => h.Category)
-                .Select(h => new HabitDetailsViewModel
-                {
-                    Id = h.Id.ToString(),
-                    Title = h.Title,
-                    StartDate = h.StartDate.ToString(MyDateFormat),
-                    EndDate = h.EndDate.ToString(MyDateFormat),
-                    Priority = h.Priority,
-                    Note = h.Note,
-                    IsCompleted = h.IsCompleted,
-                    RecurringTypeName = h.RecurringType.Name,
-                    AmountName = h.Amount != null ? h.Amount.Name : string.Empty,
-                    Metric = h.Metric,
-                    Unit = h.Unit ?? string.Empty,
-                    CategoryName = h.Category.Name
-                })
-                .FirstOrDefaultAsync() ?? new HabitDetailsViewModel();
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(id);
+
+            if (habit == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            HabitDetailsViewModel habitToReturn = new HabitDetailsViewModel
+            {
+                Id = habit.Id.ToString(),
+                Title = habit.Title,
+                StartDate = habit.StartDate.ToString(MyDateFormat),
+                EndDate = habit.EndDate.ToString(MyDateFormat),
+                Priority = habit.Priority,
+                Note = habit.Note,
+                IsCompleted = habit.IsCompleted,
+                RecurringTypeName = habit.RecurringType.Name,
+                AmountName = habit.Amount != null ? habit.Amount.Name : string.Empty,
+                Metric = habit.Metric,
+                Unit = habit.Unit ?? string.Empty,
+                CategoryName = habit.Category.Name
+            };
+
+            return habitToReturn;
         }
 
         public async Task<HabitDeleteViewModel> GetHabitToBeDeletedAsync(string id)
         {
-            Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(id);
 
             if (habit != null && !habit.IsDeleted)
             {
@@ -201,9 +188,10 @@
                     Id = habit.Id.ToString(),
                     Title = habit.Title,
                     StartDate = habit.StartDate.ToString(MyDateFormat),
-                    EndDate= habit.EndDate.ToString(MyDateFormat)
+                    EndDate = habit.EndDate.ToString(MyDateFormat)
                 };
-                return await Task.FromResult(model);
+
+                return model;
             }
             else
             {
@@ -213,76 +201,56 @@
 
         public async Task SoftDeleteHabitAsync(string id)
         {
-            Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(id);
 
-            if (habit != null && !habit.IsDeleted)
-            {
-                habit.IsDeleted = true;
-                this._dbContext.Habits.Update(habit);
-
-                int resultCount = await this._dbContext.SaveChangesAsync();
-
-                if (resultCount != 1)
-                {
-                    throw new EntityPersistFailureException();
-                }
-            }
-            else
+            if (habit == null)
             {
                 throw new EntityNotFoundException();
             }
+
+            bool success = await this._habitRepository.SoftDeleteHabitAsync(habit);
+
+            if (!success)
+            {
+                throw new EntityPersistFailureException();
+            } 
         }
         public async Task HardDeleteHabitAsync(string id)
         {
-            Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(h => h.Id.ToString() == id);
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(id);
 
-            if (habit != null && !habit.IsDeleted)
-            {
-                this._dbContext.Habits.Remove(habit);
-                int resultCount = await this._dbContext.SaveChangesAsync();
-
-                if(resultCount != 1)
-                {
-                    throw new EntityPersistFailureException();
-                }
-            }
-            else
+            if (habit == null)
             {
                 throw new EntityNotFoundException();
+            }
+
+            bool success = await this._habitRepository.HardDeleteHabitAsync(habit);
+
+            if (!success)
+            {
+                throw new EntityPersistFailureException();
             }
         }
 
         public async Task<bool> IsUserCreatorAsync(string habitId, string userId)
         {
-            Habit? habit = await this._dbContext.Habits.FirstOrDefaultAsync(t => t.Id.ToString() == habitId);
+            Habit? habit = await this._habitRepository.GetHabitByIdAsync(habitId);
 
-            if (habit != null)
-            {
-                return habit.UserId.ToString() == userId;
-            }
-            return false;
+            return habit != null ? habit.UserId.ToString() == userId : false;
         }
 
         public async Task<int> GetHabitsCountAsync(string userId, string? searchQuery = null)
         {
-            IQueryable<Habit> habitsFetchQuery = this._dbContext.Habits
-                .AsNoTracking();
+            Expression<Func<Habit, bool>>? filterQuery = null;
 
-            if (!string.IsNullOrEmpty(searchQuery))
+            if (!string.IsNullOrWhiteSpace(searchQuery))
             {
                 searchQuery = searchQuery.Trim().ToLowerInvariant();
 
-                habitsFetchQuery = habitsFetchQuery
-                    .Where(h => h.Title.ToLower().Contains(searchQuery))
-                    .AsQueryable();
+                filterQuery = h => (h.Title.ToLower().Contains(searchQuery));
             }
 
-            habitsFetchQuery = habitsFetchQuery
-                .Where(h => h.UserId.ToString() == userId)
-                .Where(h => !h.IsDeleted)
-                .AsQueryable();
-
-            int count = await habitsFetchQuery.CountAsync();
+            int count = await this._habitRepository.CountAsync(userId, filterQuery);
 
             return count;
         }

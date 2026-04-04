@@ -29,5 +29,6 @@
         public string? Unit { get; set; }
         public int CategoryId { get; set; }
         public IEnumerable<SelectCategoryId> Categories { get; set; } = new List<SelectCategoryId>();
+        public string? UserId { get; set; }
     }
 }

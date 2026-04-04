@@ -12,7 +12,8 @@
         <div class="card-body">
             <form asp-controller="Habits" asp-action="Edit" method="post">
                 @Html.AntiForgeryToken()
-                <input asp-for="Id" type="hidden" value="InvalidInitialIdValue" />
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="UserId" type="hidden" />
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
@@ -74,7 +75,7 @@
 
                     <div class="col-6 col-md-3 d-flex align-items-center">
                         <div class="form-check mb-0">
-                            <label asp-for="IsCompleted" class="control-label">Completed</label>
+                            <label asp-for="IsCompleted" class="form-label">Completed</label>
                             <input class="form-check-input" asp-for="IsCompleted" />
                         </div>
                     </div>
@@ -105,7 +106,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <input type="submit" value="Create" class="btn btn-primary" />
+                    <input type="submit" value="Save" class="btn btn-primary" />
                     <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
                 </div>
             </form>
