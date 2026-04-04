@@ -23,61 +23,14 @@
         </form>
     </div>
 
-    <div class="col-md-6 text-md-end">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-md-end justify-content-center mb-0">
-                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : string.Empty)">
-                    <a asp-area="" asp-controller="Habits" asp-action="All"
-                       asp-route-searchQuery="@Model.SearchQuery"
-                       asp-route-pageNumber="@(Model.PageNumber - 1)"
-                       class="page-link" tabindex="-1">Previous</a>
-                </li>
-                    
-                @if (Model.StartPageIndex > 1)
-                {
-                    <li class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                }
-
-                @for (int i = Model.StartPageIndex; i <= endPageIndex; i++)
-                {
-                    @if (i > 0)
-                    {
-                        <li class="page-item @(Model.PageNumber == i ? "active" : string.Empty)">
-                            <a asp-area="" asp-controller="Habits" asp-action="All"
-                               asp-route-searchQuery="@Model.SearchQuery"
-                               asp-route-pageNumber="@i"
-                               class="page-link">@i</a>
-                        </li>
-                    }
-                }
-
-                @if (endPageIndex < Model.TotalPages)
-                {
-                    <li class="page-item disabled">
-                        <a class="page-link">...</a>
-                    </li>
-                }
-
-                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : string.Empty)">
-                    <a asp-area="" asp-controller="Habits" asp-action="All"
-                       asp-route-searchQuery="@Model.SearchQuery"
-                       asp-route-pageNumber="@(Model.PageNumber + 1)"
-                       class="page-link">Next</a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 30px">
         <h1 class="h3">Habits</h1>
         <a asp-controller="Habits" asp-action="Create" class="btn btn-success">
             New Habit
         </a>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm" style="margin-top: 30px">
         <div class="card-body p-0">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
@@ -120,5 +73,52 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="col-md-6 text-md-end" style="margin-top: 30px">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-md-end justify-content-center mb-0">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="Habits" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       class="page-link" tabindex="-1">Previous</a>
+                </li>
+                    
+                @if (Model.StartPageIndex > 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                @for (int i = Model.StartPageIndex; i <= endPageIndex; i++)
+                {
+                    @if (i > 0)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : string.Empty)">
+                            <a asp-area="" asp-controller="Habits" asp-action="All"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               asp-route-pageNumber="@i"
+                               class="page-link">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (endPageIndex < Model.TotalPages)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.PageNumber == Model.TotalPages || !Model.Habits.Any() ? "disabled" : string.Empty)">
+                    <a asp-area="" asp-controller="Habits" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       class="page-link">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>

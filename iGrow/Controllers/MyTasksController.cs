@@ -113,18 +113,22 @@
         public async Task<IActionResult> Edit(string id)
         {
             string userId = this._userManager.GetUserId(this.User)!;
+
+            MyTaskFormViewModel model;
+            try
+            {
+                model = await this._taskService.GetTaskByIdAsync(id);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
+
             bool isUserCreator = await this._taskService.IsUserCreatorAsync(id, userId);
 
             if (!isUserCreator)
             {
                 return Forbid();
-            }
-
-            MyTaskFormViewModel model = await this._taskService.GetTaskByIdAsync(id);
-
-            if (model == null)
-            {
-                throw new EntityNotFoundException();
             }
 
             model.Categories = this._categoryService.GetAllCategoriesAsync().GetAwaiter().GetResult();
@@ -139,6 +143,16 @@
         {
             string userId = this._userManager.GetUserId(this.User)!;
             string? taskId = model.Id;
+
+            // Ensure the task exists before checking ownership so invalid ids return 404 instead of 403
+            try
+            {
+                await this._taskService.GetTaskByIdAsync(taskId);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
 
             bool isUserCreator = await this._taskService.IsUserCreatorAsync(taskId, userId);
 

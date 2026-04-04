@@ -164,6 +164,16 @@
             string userId = this._userManager.GetUserId(this.User)!;
             string? habitId = model.Id;
 
+            // Ensure the habit exists before checking ownership so invalid ids return 404 instead of 403
+            try
+            {
+                await this._habitService.GetHabitByIdAsync(model.Id);
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound();
+            }
+
             bool isUserCreator = await this._habitService.IsUserCreatorAsync(model.Id, userId);
 
             if (!isUserCreator)
@@ -233,20 +243,13 @@
         public async Task<IActionResult> Details(string id)
         {
             string userId = this._userManager.GetUserId(this.User)!;
-            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
 
-            if (!isUserCreator)
-            {
-                return Forbid();
-            }
-
+            HabitDetailsViewModel model;
             try
             {
-                HabitDetailsViewModel model = await this._habitService.GetHabitDetailsAsync(id);
-
-                return View(model);
+                model = await this._habitService.GetHabitDetailsAsync(id);
             }
-            catch(EntityNotFoundException)
+            catch (EntityNotFoundException)
             {
                 return NotFound();
             }
@@ -257,6 +260,15 @@
 
                 return RedirectToAction("Details", new { id });
             }
+
+            bool isUserCreator = await this._habitService.IsUserCreatorAsync(id, userId);
+
+            if (!isUserCreator)
+            {
+                return Forbid();
+            }
+
+            return View(model);
         }
 
         [HttpGet]
