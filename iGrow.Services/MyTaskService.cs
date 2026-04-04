@@ -4,9 +4,6 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using Microsoft.EntityFrameworkCore;
-
-    using iGrow.Data;
     using iGrow.Data.Models;
     using iGrow.Data.Repository.Contracts;
     using iGrow.GCommon.Exceptions;
@@ -17,13 +14,11 @@
 
     public class MyTaskService : IMyTaskService
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IMyTaskRepository _myTaskRepository;
+        private readonly IMyTaskRepository _taskRepository;
 
-        public MyTaskService(ApplicationDbContext dbContext, IMyTaskRepository myTaskRepository)
+        public MyTaskService(IMyTaskRepository myTaskRepository)
         {
-            this._dbContext = dbContext;
-            this._myTaskRepository = myTaskRepository;
+            this._taskRepository = myTaskRepository;
         }
 
         public async Task<IEnumerable<MyTaskViewModel>> GetAllTasksAsync(string userId, string? searchQuery = null, int pageNumber = 1)
@@ -39,7 +34,7 @@
 
             int skipCount = (pageNumber - 1) * DefaultEntitiesPerPage;
 
-            IEnumerable<MyTask> tasksFetchQuery = await _myTaskRepository
+            IEnumerable<MyTask> tasksFetchQuery = await this._taskRepository
                 .GetAllTasksNoTrackingByUserIdWithCategoryAndRecurringTypeAsync(
                     userId: userId,
                     filterQuery: filterQuery,
@@ -79,7 +74,7 @@
                 UserId = Guid.Parse(userId)
             };
 
-            bool success = await this._myTaskRepository.AddTaskAsync(task);
+            bool success = await this._taskRepository.AddTaskAsync(task);
 
             if (!success)
             {
@@ -89,7 +84,7 @@
 
         public async Task<MyTaskFormViewModel> GetTaskByIdAsync(string id)
         {
-            MyTask? task = await this._myTaskRepository
+            MyTask? task = await this._taskRepository
                 .GetTaskByIdAsync(id);
 
             if (task != null)
@@ -102,7 +97,8 @@
                         Note = task.Note,
                         IsCompleted = task.IsCompleted,
                         RecurringTypeId = task.RecurringTypeId,
-                        CategoryId = task.CategoryId
+                        CategoryId = task.CategoryId,
+                        UserId = task.UserId.ToString()
                 };
             }
             else
@@ -113,24 +109,22 @@
 
         public async Task EditTaskAsync(string id, MyTaskFormViewModel model)
         {
-            bool taskExists = await _myTaskRepository.ExistsByIdAsync(id);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(id);
 
-            if (taskExists)
+            if (task != null)
             {
                 DateTime taskDate = Convert.ToDateTime(model.Date, CultureInfo.InvariantCulture);
 
-                MyTask task = new MyTask
-                {
-                    Title = model.Title,
-                    Date = taskDate,
-                    Priority = model.Priority,
-                    Note = model.Note,
-                    IsCompleted = model.IsCompleted,
-                    RecurringTypeId = model.RecurringTypeId,
-                    CategoryId = model.CategoryId
-                };
+                task.Title = model.Title;
+                task.Date = taskDate;
+                task.Priority = model.Priority;
+                task.Note = model.Note;
+                task.IsCompleted = model.IsCompleted;
+                task.RecurringTypeId = model.RecurringTypeId;
+                task.CategoryId = model.CategoryId;
+                task.UserId = Guid.Parse(model.UserId);
 
-                bool success =  await _myTaskRepository.EditTaskAsync(task);
+                bool success =  await this._taskRepository.EditTaskAsync(task);
 
                 if(!success)
                 {
@@ -145,7 +139,7 @@
 
         public async Task<MyTaskDetailsViewModel> GetTaskDetailsAsync(string id)
         {
-            MyTask? task = await _myTaskRepository.GetTaskByIdAsync(id);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(id);
 
             if (task == null)
             {
@@ -168,7 +162,7 @@
         }
         public async Task<MyTaskDeleteViewModel> GetTaskToBeDeletedAsync(string id)
         {
-            MyTask? task = await _myTaskRepository.GetTaskByIdAsync(id);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(id);
 
             if (task != null && !task.IsDeleted)
             {
@@ -188,14 +182,14 @@
 
         public async Task SoftDeleteTaskAsync(string id)
         {
-            MyTask? task = await _myTaskRepository.GetTaskByIdAsync(id);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(id);
 
             if (task == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            bool success = await _myTaskRepository.SoftDeleteTaskAsync(task);
+            bool success = await this._taskRepository.SoftDeleteTaskAsync(task);
 
             if (!success)
             {
@@ -205,14 +199,14 @@
 
         public async Task HardDeleteTaskAsync(string id)
         {
-            MyTask? task = await _myTaskRepository.GetTaskByIdAsync(id);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(id);
 
             if (task == null)
             {
                 throw new EntityNotFoundException();
             }
 
-            bool success = await _myTaskRepository.HardDeleteTaskAsync(task);
+            bool success = await this._taskRepository.HardDeleteTaskAsync(task);
 
             if (!success)
             {
@@ -221,13 +215,9 @@
         }
         public async Task<bool> IsUserCreatorAsync(string taskId, string userId)
         {
-            MyTask? task = await _myTaskRepository.GetTaskByIdAsync(taskId);
+            MyTask? task = await this._taskRepository.GetTaskByIdAsync(taskId);
 
-            if (task != null)
-            {
-                return task.UserId.ToString() == userId;
-            }
-            return false;
+            return task != null ? task.UserId.ToString() == userId : false;
         }
 
         public async Task<int> GetTasksCountAsync(string userId, string? searchQuery = null)
@@ -241,7 +231,7 @@
                 filterQuery = t => (t.Title.ToLower().Contains(searchQuery));
             }
 
-            int count = await _myTaskRepository.CountAsync(userId, filterQuery);
+            int count = await this._taskRepository.CountAsync(userId, filterQuery);
 
             return count;
         }

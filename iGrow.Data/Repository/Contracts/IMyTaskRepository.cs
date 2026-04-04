@@ -1,8 +1,8 @@
-﻿using iGrow.Data.Models;
-using System.Linq.Expressions;
-
-namespace iGrow.Data.Repository.Contracts
+﻿namespace iGrow.Data.Repository.Contracts
 {
+    using System.Linq.Expressions;
+
+    using iGrow.Data.Models;
     public interface IMyTaskRepository
     {
         Task<IEnumerable<MyTask>> GetAllTasksNoTrackingByUserIdWithCategoryAndRecurringTypeAsync(string userId, Expression<Func<MyTask, bool>>? filterQuery, int? skipCnt, int? takeCnt);

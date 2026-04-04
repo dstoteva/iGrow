@@ -91,9 +91,9 @@
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<MyTask>()
-                .HasOne(u => u.User)
-                .WithMany()
-                .HasForeignKey(h => h.UserId)
+                .HasOne(t => t.User)
+                .WithMany(u => u.Tasks)
+                .HasForeignKey(t => t.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Habit>()
@@ -115,8 +115,8 @@
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Habit>()
-                .HasOne(u => u.User)
-                .WithMany()
+                .HasOne(h => h.User)
+                .WithMany(u => u.Habits)
                 .HasForeignKey(h => h.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 

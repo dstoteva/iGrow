@@ -49,10 +49,6 @@
                     .AsQueryable();
             }
 
-            // inside the repository, before executing:
-            var sql = tasksFetchQuery.ToQueryString();
-            System.Diagnostics.Debug.WriteLine(sql);
-
             return await tasksFetchQuery.ToArrayAsync();
         }
 
