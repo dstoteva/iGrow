@@ -121,21 +121,21 @@
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Quit a bad habit" },
-                new Category { Id = 2, Name = "Art" },
-                new Category { Id = 3, Name = "Task" },
-                new Category { Id = 4, Name = "Meditation" },
-                new Category { Id = 5, Name = "Study" },
-                new Category { Id = 6, Name = "Sports" },
-                new Category { Id = 7, Name = "Entertainment" },
-                new Category { Id = 8, Name = "Social" },
-                new Category { Id = 9, Name = "Finance" },
-                new Category { Id = 10, Name = "Health" },
-                new Category { Id = 11, Name = "Work" },
-                new Category { Id = 12, Name = "Nutrition" },
-                new Category { Id = 13, Name = "Home" },
-                new Category { Id = 14, Name = "Outdoor" },
-                new Category { Id = 100, Name = "Other" }
+                new Category { Id = 1, Name = "Quit a bad habit", ImageUrl = "/images/categories/quit.svg" },
+                new Category { Id = 2, Name = "Art", ImageUrl = "/images/categories/art.svg" },
+                new Category { Id = 3, Name = "Task", ImageUrl = "/images/categories/task.svg" },
+                new Category { Id = 4, Name = "Meditation", ImageUrl = "/images/categories/meditation.svg" },
+                new Category { Id = 5, Name = "Study", ImageUrl = "/images/categories/study.svg" },
+                new Category { Id = 6, Name = "Sports", ImageUrl = "/images/categories/sports.svg" },
+                new Category { Id = 7, Name = "Entertainment", ImageUrl = "/images/categories/entertainment.svg" },
+                new Category { Id = 8, Name = "Social", ImageUrl = "/images/categories/social.svg" },
+                new Category { Id = 9, Name = "Finance", ImageUrl = "/images/categories/finance.svg" },
+                new Category { Id = 10, Name = "Health", ImageUrl = "/images/categories/health.svg" },
+                new Category { Id = 11, Name = "Work", ImageUrl = "/images/categories/work.svg" },
+                new Category { Id = 12, Name = "Nutrition", ImageUrl = "/images/categories/nutrition.svg" },
+                new Category { Id = 13, Name = "Home", ImageUrl = "/images/categories/home.svg" },
+                new Category { Id = 14, Name = "Outdoor", ImageUrl = "/images/categories/outdoor.svg" },
+                new Category { Id = 100, Name = "Other", ImageUrl = "/images/categories/other.svg" }
             );
 
             builder.Entity<RecurringType>().HasData(
