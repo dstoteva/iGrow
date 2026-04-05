@@ -68,7 +68,7 @@ namespace iGrow
             app.UseRolesSeeder();
             app.UseAdminSeeder();
 
-            app.UseStatusCodePagesWithRedirects("Home/Error/{0}");
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
             app.MapStaticAssets();
 

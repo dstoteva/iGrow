@@ -1,7 +1,6 @@
 namespace iGrow.Controllers
 {
     using iGrow.Data.Models;
-    using iGrow.Web.Controllers;
     using iGrow.Web.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -9,13 +8,10 @@ namespace iGrow.Controllers
     using System.Diagnostics;
 
     [AllowAnonymous]
-    public class HomeController : BaseController
+    public class HomeController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-
         public HomeController(UserManager<ApplicationUser> userManager)
         {
-            this._userManager = userManager;
         }
         
         public IActionResult Index()
@@ -34,7 +30,7 @@ namespace iGrow.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int statusCode)
         {
-            if(statusCode == StatusCodes.Status400BadRequest)
+            if (statusCode == StatusCodes.Status400BadRequest)
             {
                 return View("BadRequest");
             }
@@ -46,7 +42,6 @@ namespace iGrow.Controllers
             {
                 return View("ServerError");
             }
-
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
