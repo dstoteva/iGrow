@@ -1,7 +1,7 @@
 ﻿@model MyTaskAllViewModel
 
 @{
-    ViewData["Title"] = "All Tasks";
+    ViewData["Title"] = "Tasks";
     int endPageIndex = Math.Min((Model.StartPageIndex + Model.ShowingPages), Model.TotalPages);
 }
 
@@ -23,8 +23,12 @@
         </form>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 30px">
-        <h1 class="h3">Tasks</h1>
+    <h1 class="text-center mb-4 text-info fw-bold" style="margin-top: 30px">@ViewData["Title"]</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary fw-bold">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
         <a asp-controller="MyTasks" asp-action="Create" class="btn btn-success">
             New Task
         </a>

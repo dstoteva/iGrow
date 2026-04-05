@@ -4,18 +4,25 @@
     ViewData["Title"] = "Delete Category";
 }
 
-<h1>Delete Category</h1>
-
-<div>
-    <img src="@(Model.ImageUrl ?? "/images/categories/default.png")"
-         alt="@Model.Name"
-         class="category-thumb"
-         loading="lazy" />
-    <p>Are you sure you want to delete "@Model.Name"?</p>
+<div class="container">
+    <div class="card shadow-sm col-md-6 mx-auto">
+        <div class="card-header">
+            <h4 class="mb-0">@ViewData["Title"]</h4>
+        </div>
+        <div class="card-body">
+            <div>
+                <img src="@(Model.ImageUrl ?? "/images/categories/default.png")"
+                     alt="@Model.Name"
+                     class="category-thumb"
+                     loading="lazy" />
+                <p>Are you sure you want to delete "@Model.Name"?</p>
+            </div>
+            
+            <form asp-area="Admin" asp-controller="Categories" asp-action="ConfirmDelete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a asp-area="Admin" asp-action="All" asp-controller="Categories" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
 </div>
-
-<form asp-area="Admin" asp-controller="Categories" asp-action="ConfirmDelete" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-area="Admin" asp-action="All" asp-controller="Categories" class="btn btn-secondary">Cancel</a>
-</form>

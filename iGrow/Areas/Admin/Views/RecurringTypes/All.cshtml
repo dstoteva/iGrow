@@ -1,7 +1,7 @@
 @model iGrow.Web.ViewModels.Admin.RecurringType.RecurringTypeAllViewModel
 
 @{
-    ViewData["Title"] = "All Recurring Types";
+    ViewData["Title"] = "Recurring Types";
     int endPageIndex = Math.Min((Model.StartPageIndex + Model.ShowingPages), Model.TotalPages);
 }
 
@@ -23,8 +23,12 @@
         </form>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 30px">
-        <h1 class="h3">Recurring Types</h1>
+    <h1 class="text-center mb-4 text-warning fw-bold" style="margin-top: 30px">@ViewData["Title"]</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary fw-bold">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
         <a asp-area="Admin" asp-controller="RecurringTypes" asp-action="Create" class="btn btn-success">
             New Recurring Type
         </a>

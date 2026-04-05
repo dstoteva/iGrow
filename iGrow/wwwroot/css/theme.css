@@ -1,0 +1,85 @@
+﻿:root {
+    --app-bg: #f6f7fb;
+    --card-bg: #ffffff;
+    --muted: #6c757d;
+    --accent: #0d6efd;
+}
+
+/* page background and typography */
+body {
+    background: var(--app-bg);
+    color: #2c2c2c;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* navbar */
+.navbar {
+    background: linear-gradient(90deg, rgba(13,110,253,0.06), rgba(13,110,253,0.02));
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+    .navbar .navbar-brand {
+        font-weight: 600;
+        color: var(--accent) !important;
+    }
+
+/* cards */
+.card {
+    background: var(--card-bg);
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(37,40,47,0.06);
+}
+
+/* form card wrapper */
+.form-card-wrapper {
+    padding: 1rem;
+}
+
+/* buttons */
+.btn-primary {
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(13,110,253,0.08);
+}
+
+/* small helper for category thumbnails */
+.category-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* discrete list rows */
+.category-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* subtle table style */
+.table-hover tbody tr:hover {
+    background: linear-gradient(90deg, rgba(13,110,253,0.03), rgba(13,110,253,0.01));
+}
+
+/* pager/active */
+.pagination .page-item.active .page-link {
+    background: linear-gradient(180deg,#0d6efd,#0b5ed7);
+    color: #fff;
+    border-radius: 6px;
+    border: 0;
+}
+
+/* responsive tweaks */
+@media (max-width:576px) {
+    .category-thumb {
+        width: 34px;
+        height: 34px;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+}
