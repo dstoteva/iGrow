@@ -1,0 +1,18 @@
+@model iGrow.Web.ViewModels.Admin.RecurringType.RecurringTypeFormViewModel
+
+@{
+    ViewData["Title"] = "Create Recurring Type";
+}
+
+<h1>Create Recurring Type</h1>
+
+<form asp-area="Admin" asp-controller="RecurringTypes" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-area="Admin" asp-action="All" asp-controller="RecurringTypes" class="btn btn-secondary">Back</a>
+</form>

@@ -1,12 +1,11 @@
 ﻿namespace iGrow.Services
 {
-    using Microsoft.EntityFrameworkCore;
-
-    using iGrow.Data;
+    using iGrow.Data.Models;
+    using iGrow.Data.Repository;
+    using iGrow.Data.Repository.Contracts;
+    using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels;
-    using iGrow.Data.Repository.Contracts;
-    using iGrow.Data.Models;
 
     public class RecurringTypeService : IRecurringTypeService
     {
@@ -29,6 +28,54 @@
                 });
 
             return projected;
+        }
+
+        public async Task AddRecurringTypeAsync(string name)
+        {
+            RecurringType rt = new RecurringType { Name = name };
+
+            bool success = await _recurringTypeRepository.AddRecurringTypeAsync(rt);
+
+            if (!success)
+            {
+                throw new EntityPersistFailureException();
+            }
+        }
+
+        public async Task<SelectRecurringTypeId?> GetRecurringTypeByIdAsync(int id)
+        {
+            RecurringType? rt = await _recurringTypeRepository.GetRecurringTypeByIdAsync(id);
+
+            if (rt != null)
+            {
+                return new SelectRecurringTypeId { Id = rt.Id, Name = rt.Name };
+            }
+            else
+            {
+                throw new EntityNotFoundException();
+            }
+        }
+
+        public async Task DeleteRecurringTypeAsync(int id)
+        {
+            RecurringType? rt = await _recurringTypeRepository.GetRecurringTypeByIdAsync(id);
+
+            if (rt == null)
+            {
+                throw new EntityNotFoundException();
+            }
+
+            bool success = await _recurringTypeRepository.DeleteRecurringTypeAsync(rt);
+
+            if (!success)
+            {
+                throw new EntityPersistFailureException();
+            }
+        }
+
+        public async Task<bool> ItemExistsByNameAsync(string name)
+        {
+            return await _recurringTypeRepository.ItemExistsByNameAsync(name);
         }
     }
 }

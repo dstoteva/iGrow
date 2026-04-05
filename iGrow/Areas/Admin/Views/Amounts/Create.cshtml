@@ -1,0 +1,18 @@
+@model iGrow.Web.ViewModels.Admin.Amount.AmountFormViewModel
+
+@{
+    ViewData["Title"] = "Create Amount";
+}
+
+<h1>Create Amount</h1>
+
+<form asp-area="Admin" asp-controller="Amounts" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-area="Admin" asp-action="All" asp-controller="Amounts" class="btn btn-secondary">Back</a>
+</form>

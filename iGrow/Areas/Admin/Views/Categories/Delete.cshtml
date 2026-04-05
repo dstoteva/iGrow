@@ -1,0 +1,17 @@
+@model iGrow.Web.ViewModels.Admin.Category.CategoryDeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete Category";
+}
+
+<h1>Delete Category</h1>
+
+<div>
+    <p>Are you sure you want to delete "@Model.Name"?</p>
+</div>
+
+<form asp-area="Admin" asp-controller="Categories" asp-action="ConfirmDelete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-area="Admin" asp-action="All" asp-controller="Categories" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,17 @@
+@model iGrow.Web.ViewModels.Admin.RecurringType.RecurringTypeDeleteViewModel
+
+@{
+    ViewData["Title"] = "Delete Recurring Type";
+}
+
+<h1>Delete Recurring Type</h1>
+
+<div>
+    <p>Are you sure you want to delete "@Model.Name"?</p>
+</div>
+
+<form asp-area="Admin" asp-controller="RecurringTypes" asp-action="ConfirmDelete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-area="Admin" asp-action="All" asp-controller="RecurringTypes" class="btn btn-secondary">Cancel</a>
+</form>

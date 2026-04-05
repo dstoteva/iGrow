@@ -1,0 +1,112 @@
+@model iGrow.Web.ViewModels.Admin.Category.CategoryAllViewModel
+
+@{
+    ViewData["Title"] = "All Categories";
+    int endPageIndex = Math.Min((Model.StartPageIndex + Model.ShowingPages), Model.TotalPages);
+}
+
+<div class="container">
+    <div class="col-md-6 mb-2 mb-md-0">
+        <form asp-area="Admin" asp-controller="Categories" asp-action="All" method="get" class="mb-0 d-flex">
+            <div class="input-group">
+                <input asp-for="SearchQuery" type="text" class="form-control" placeholder="Search by name..."/>
+
+                @if (!string.IsNullOrEmpty(Model.SearchQuery?.ToString()))
+                {
+                    <a href="@Url.Action("All", "Categories", new { area = "Admin" })" class="btn btn-outline-secondary" title="Clear search">
+                        <i class="bi bi-x-lg" style="color:#000000"></i>
+                    </a>
+                }
+
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3" style="margin-top: 30px">
+        <h1 class="h3">Categories</h1>
+        <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-success">
+            New Category
+        </a>
+    </div>
+
+    <div class="card shadow-sm" style="margin-top: 30px">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model == null || !Model.Categories.Any())
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center py-4">No categories found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.Categories)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td class="text-end">
+                                    <a asp-area="Admin" asp-action="Delete" asp-controller="Categories" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6 text-md-end" style="margin-top: 30px">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-md-end justify-content-center mb-0">
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : string.Empty)">
+                    <a asp-area="Admin" asp-controller="Categories" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       class="page-link" tabindex="-1">Previous</a>
+                </li>
+
+                @if (Model.StartPageIndex > 1)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                @for (int i = Model.StartPageIndex; i <= endPageIndex; i++)
+                {
+                    @if (i > 0)
+                    {
+                        <li class="page-item @(Model.PageNumber == i ? "active" : string.Empty)">
+                            <a asp-area="Admin" asp-controller="Categories" asp-action="All"
+                               asp-route-searchQuery="@Model.SearchQuery"
+                               asp-route-pageNumber="@i"
+                               class="page-link">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (endPageIndex < Model.TotalPages)
+                {
+                    <li class="page-item disabled">
+                        <a class="page-link">...</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.PageNumber == Model.TotalPages || !Model.Categories.Any() ? "disabled" : string.Empty)">
+                    <a asp-area="Admin" asp-controller="Categories" asp-action="All"
+                       asp-route-searchQuery="@Model.SearchQuery"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       class="page-link">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -57,5 +57,9 @@
         public const string UserRoleRemoveIdentityErrorMessage = "There was an error removing role {0} from the user! Ensure that user and role exists and user is assigned to the role!";
         public const string UserDeleteNotExistMessage = "There was an error deleting the user! Ensure that the user exists!";
         public const string UserDeleteFailureErrorMessage = "There was an error deleting the user! Please review log information!";
+
+        //Admin area error messages
+        public const string UnableToDeleteErrorMessage = "Unable to delete. Item is in use.";
+        public const string ItemExistsErrorMessage = "An item with the same name already exists.";
     }
 }
