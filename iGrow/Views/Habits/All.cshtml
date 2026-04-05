@@ -61,7 +61,15 @@
                                 <td>@item.EndDate</td>
                                 <td>@item.Priority</td>
                                 <td>@(item.IsCompleted ? "Yes" : "No")</td>
-                                <td>@item.CategoryName</td>
+                                <td>
+                                    <div class="category-row">
+                                        <img src="@(String.IsNullOrEmpty(item.CategoryImageUrl) ? "/images/categories/default.png" : item.CategoryImageUrl)"
+                                             alt="@item.CategoryName"
+                                             class="category-thumb"
+                                             loading="lazy" />
+                                        <span class="category-name">@item.CategoryName</span>
+                                    </div>
+                                </td>
                                 <td class="text-end">
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Details</a>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Edit</a>

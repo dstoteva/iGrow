@@ -17,5 +17,6 @@
         public int Metric { get; set; }
         public string Unit { get; set; } = null!;
         public string CategoryName { get; set; } = null!;
+        public string CategoryImageUrl { get; set; } = null!;
     }
 }

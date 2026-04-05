@@ -52,7 +52,8 @@
                     EndDate = t.EndDate.ToString(MyDateFormat),
                     Priority = t.Priority,
                     IsCompleted = t.IsCompleted,
-                    CategoryName = t.Category.Name
+                    CategoryName = t.Category.Name,
+                    CategoryImageUrl = t.Category.ImageUrl ?? string.Empty
                 });
 
             return projected;
@@ -171,7 +172,8 @@
                 AmountName = habit.Amount != null ? habit.Amount.Name : string.Empty,
                 Metric = habit.Metric,
                 Unit = habit.Unit ?? string.Empty,
-                CategoryName = habit.Category.Name
+                CategoryName = habit.Category.Name,
+                CategoryImageUrl = habit.Category.ImageUrl ?? string.Empty
             };
 
             return habitToReturn;

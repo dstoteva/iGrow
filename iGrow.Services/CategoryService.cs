@@ -6,10 +6,14 @@
     using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels;
+    using Microsoft.AspNetCore.Http;
 
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private static readonly string wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        private static readonly string[] AllowedExt = { ".png", ".jpg", ".jpeg", ".gif" };
+        private const long MaxFileBytes = 2 * 1024 * 1024;
 
         public CategoryService(ICategoryRepository categoryRepository)
         {
@@ -24,17 +28,52 @@
                 .Select(c => new SelectCategoryId
                 {
                     Id = c.Id,
-                    Name = c.Name
+                    Name = c.Name,
+                    ImageUrl = c.ImageUrl
                 });
 
             return projected;
         }
 
-        public async Task AddCategoryAsync(string name)
+        public async Task AddCategoryAsync(string name, IFormFile? file)
         {
             Category category = new Category { Name = name };
+            bool success = false;
 
-            bool success = await _categoryRepository.AddCategoryAsync(category);
+            if (file != null && file.Length > 0)
+            {
+                var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (!AllowedExt.Contains(ext))
+                {
+                    throw new InvalidOperationException("Invalid image extension.");
+                }
+
+                if (file.Length > MaxFileBytes)
+                {
+                    throw new InvalidOperationException("Image too large.");
+                }
+
+                var uploads = Path.Combine(wwwRootPath, "images", "categories");
+                Directory.CreateDirectory(uploads);
+
+                var fileName = $"{Guid.NewGuid()}{ext}";
+                var filePath = Path.Combine(uploads, fileName);
+
+                CancellationToken cancellationToken = CancellationToken.None;
+
+                await using (var fs = System.IO.File.Create(filePath))
+                {
+                    await file.CopyToAsync(fs, cancellationToken);
+                }
+
+                category.ImageUrl = $"/images/categories/{fileName}";
+
+                success = await _categoryRepository.AddCategoryAsync(category, cancellationToken);
+            }
+            else
+            {
+                success = await _categoryRepository.AddCategoryAsync(category, null);
+            }
 
             if (!success)
             {
@@ -48,7 +87,7 @@
 
             if (c != null)
             {
-                return new SelectCategoryId { Id = c.Id, Name = c.Name };
+                return new SelectCategoryId { Id = c.Id, Name = c.Name, ImageUrl = c.ImageUrl};
             }
             else
             {

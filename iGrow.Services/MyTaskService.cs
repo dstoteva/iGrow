@@ -52,7 +52,8 @@
                     Note = t.Note,
                     IsCompleted = t.IsCompleted,
                     RecurringTypeName = t.RecurringType.Name,
-                    CategoryName = t.Category.Name
+                    CategoryName = t.Category.Name,
+                    CategoryImageUrl = t.Category.ImageUrl ?? string.Empty
                 });
 
             return projected;
@@ -155,7 +156,8 @@
                 Note = task.Note,
                 IsCompleted = task.IsCompleted,
                 RecurringTypeName = task.RecurringType.Name,
-                CategoryName = task.Category.Name
+                CategoryName = task.Category.Name,
+                CategoryImageUrl = task.Category.ImageUrl ?? string.Empty
             };
 
             return taskToReturn;

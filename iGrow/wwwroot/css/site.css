@@ -112,3 +112,27 @@ footer.footer {
     min-height: calc(100vh - 170px);
     padding-bottom: 2rem;
 }
+
+/* Category display css */
+.category-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+    opacity: 0.9;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04) inset;
+}
+
+.category-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+}
+
+.category-name {
+    font-size: 0.95rem;
+    color: #333;
+}

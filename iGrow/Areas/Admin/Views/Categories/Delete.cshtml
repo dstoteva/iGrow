@@ -7,6 +7,10 @@
 <h1>Delete Category</h1>
 
 <div>
+    <img src="@(Model.ImageUrl ?? "/images/categories/default.png")"
+         alt="@Model.Name"
+         class="category-thumb"
+         loading="lazy" />
     <p>Are you sure you want to delete "@Model.Name"?</p>
 </div>
 

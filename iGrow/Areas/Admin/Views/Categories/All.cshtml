@@ -51,7 +51,15 @@
                         foreach (var item in Model.Categories)
                         {
                             <tr>
-                                <td>@item.Name</td>
+                                <td>
+                                    <div class="category-row">
+                                        <img src="@(item.ImageUrl ?? "/images/categories/default.png")"
+                                             alt="@item.Name"
+                                             class="category-thumb"
+                                             loading="lazy" />
+                                        <span class="category-name">@item.Name</span>
+                                    </div>
+                                </td>
                                 <td class="text-end">
                                     <a asp-area="Admin" asp-action="Delete" asp-controller="Categories" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
                                 </td>

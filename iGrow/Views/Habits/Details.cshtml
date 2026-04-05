@@ -33,7 +33,15 @@
                         <dd class="col-sm-8">@Model.RecurringTypeName</dd>
 
                         <dt class="col-sm-4">Category</dt>
-                        <dd class="col-sm-8">@Model.CategoryName</dd>
+                        <dd class="col-sm-8">
+                            <div class="category-row">
+                                <img src="@(String.IsNullOrEmpty(Model.CategoryImageUrl) ? "/images/categories/default.png" : Model.CategoryImageUrl)"
+                                     alt="@Model.CategoryName"
+                                     class="category-thumb"
+                                     loading="lazy" />
+                                <span class="category-name">@Model.CategoryName</span>
+                            </div>
+                        </dd>
 
                         <dt class="col-sm-4">Completed</dt>
                         <dd class="col-sm-8">@(Model.IsCompleted ? "Yes" : "No")</dd>

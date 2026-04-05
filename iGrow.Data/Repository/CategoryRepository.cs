@@ -7,6 +7,7 @@
 
     using iGrow.Data.Models;
     using iGrow.Data.Repository.Contracts;
+    using Microsoft.AspNetCore.Http;
 
     public class CategoryRepository : BaseRepository, ICategoryRepository
     {
@@ -25,9 +26,17 @@
             return await DbContext.Categories.FindAsync(id);
         }
 
-        public async Task<bool> AddCategoryAsync(Category category)
+        public async Task<bool> AddCategoryAsync(Category category, CancellationToken? cancellationToken)
         {
-            await DbContext.Categories.AddAsync(category);
+            if(cancellationToken != null)
+            {
+                await DbContext.Categories.AddAsync(category, (CancellationToken)cancellationToken);
+            }
+            else
+            {
+                await DbContext.Categories.AddAsync(category);
+            }
+
 
             int r = await SaveChangesAsync();
 

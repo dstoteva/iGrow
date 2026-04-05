@@ -12,6 +12,7 @@
         public int Priority { get; set; }
         public bool IsCompleted { get; set; }
         public string CategoryName { get; set; } = null!;
+        public string CategoryImageUrl { get; set; } = null!;
 
     }
 }

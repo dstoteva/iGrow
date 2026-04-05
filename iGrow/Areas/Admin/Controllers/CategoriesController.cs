@@ -53,7 +53,7 @@ namespace iGrow.Web.Areas.Admin.Controllers
                 TotalPages = (int)Math.Ceiling(total / (double)DefaultEntitiesPerPage),
                 ShowingPages = model.ShowingPages,
                 StartPageIndex = (model.StartPageIndex / 10) * 10,
-                Categories = items.Select(a => new CategoryViewModel { Id = a.Id, Name = a.Name }).ToList()
+                Categories = items.Select(a => new CategoryViewModel { Id = a.Id, Name = a.Name, ImageUrl = a.ImageUrl }).ToList()
             };
 
             return View(vm);
@@ -66,7 +66,7 @@ namespace iGrow.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CategoryFormViewModel model)
+        public async Task<IActionResult> Create(CategoryFormViewModel model, IFormFile? icon)
         {
             if (!ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace iGrow.Web.Areas.Admin.Controllers
 
             try
             {
-                await _categoryService.AddCategoryAsync(model.Name);
+                await _categoryService.AddCategoryAsync(model.Name, icon);
             }
             catch (Exception ex)
             {
@@ -104,7 +104,7 @@ namespace iGrow.Web.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return View(new CategoryDeleteViewModel { Id = c.Id, Name = c.Name });
+            return View(new CategoryDeleteViewModel { Id = c.Id, Name = c.Name, ImageUrl = c.ImageUrl });
         }
 
         [HttpPost]
@@ -124,7 +124,7 @@ namespace iGrow.Web.Areas.Admin.Controllers
 
                 var c = await _categoryService.GetCategoryByIdAsync(id);
 
-                return View("Delete", new CategoryDeleteViewModel { Id = c?.Id ?? id, Name = c?.Name ?? string.Empty });
+                return View("Delete", new CategoryDeleteViewModel { Id = c?.Id ?? id, Name = c?.Name ?? string.Empty, ImageUrl = c?.ImageUrl ?? String.Empty });
             }
 
             return RedirectToAction(nameof(All));
