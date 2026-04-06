@@ -26,16 +26,9 @@
             return await DbContext.Categories.FindAsync(id);
         }
 
-        public async Task<bool> AddCategoryAsync(Category category, CancellationToken? cancellationToken)
+        public async Task<bool> AddCategoryAsync(Category category)
         {
-            if(cancellationToken != null)
-            {
-                await DbContext.Categories.AddAsync(category, (CancellationToken)cancellationToken);
-            }
-            else
-            {
-                await DbContext.Categories.AddAsync(category);
-            }
+            await DbContext.Categories.AddAsync(category);
 
 
             int r = await SaveChangesAsync();

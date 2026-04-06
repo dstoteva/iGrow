@@ -10,7 +10,7 @@
     {
         Task<IEnumerable<Category>> GetAllCategoriesNoTrackingAsync();
         Task<Category?> GetCategoryByIdAsync(int id);
-        Task<bool> AddCategoryAsync(Category category, CancellationToken? cancellationToken);
+        Task<bool> AddCategoryAsync(Category category);
         Task<bool> DeleteCategoryAsync(Category category);
         Task<bool> ItemExistsByNameAsync(string name);
     }

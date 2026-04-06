@@ -1,12 +1,14 @@
 ﻿namespace iGrow.Services
 {
+    using System.IO;
+
+    using Microsoft.AspNetCore.Http;
+
     using iGrow.Data.Models;
-    using iGrow.Data.Repository;
     using iGrow.Data.Repository.Contracts;
     using iGrow.GCommon.Exceptions;
     using iGrow.Services.Contracts;
     using iGrow.Web.ViewModels;
-    using Microsoft.AspNetCore.Http;
 
     public class CategoryService : ICategoryService
     {
@@ -59,20 +61,18 @@
                 var fileName = $"{Guid.NewGuid()}{ext}";
                 var filePath = Path.Combine(uploads, fileName);
 
-                CancellationToken cancellationToken = CancellationToken.None;
-
-                await using (var fs = System.IO.File.Create(filePath))
+                await using (var fs = File.Create(filePath))
                 {
-                    await file.CopyToAsync(fs, cancellationToken);
+                    await file.CopyToAsync(fs);
                 }
 
                 category.ImageUrl = $"/images/categories/{fileName}";
 
-                success = await _categoryRepository.AddCategoryAsync(category, cancellationToken);
+                success = await _categoryRepository.AddCategoryAsync(category);
             }
             else
             {
-                success = await _categoryRepository.AddCategoryAsync(category, null);
+                success = await _categoryRepository.AddCategoryAsync(category);
             }
 
             if (!success)
