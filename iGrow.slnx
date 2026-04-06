@@ -6,6 +6,9 @@
   <Folder Name="/Services/">
     <Project Path="iGrow.Services/iGrow.Services.csproj" Id="21d79b56-3a58-49ad-849f-6f1cbca66ac4" />
   </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="iGrow.Services.Tests/iGrow.Services.Tests.csproj" Id="409b6a6d-0bab-4428-960a-5d26b236dac3" />
+  </Folder>
   <Folder Name="/Web/">
     <Project Path="iGrow.Web.Infrastructure/iGrow.Web.Infrastructure.csproj" Id="8df58b40-3b23-4606-bbbe-62407ddd603e" />
     <Project Path="iGrow/iGrow.Web.csproj" />
